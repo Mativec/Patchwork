@@ -23,23 +23,21 @@ public class Patch{
     patchList.put(id, this);
   }
 
+  private String toStringSquare(Integer[] square){ return "(" + square[0] + "," + square[1] + ")"; }
+
   @Override
   public String toString() {
     var output = new StringBuilder();
 
     output.append("Patch : ");
-    output.append("[");
-    for (var square : squares){
-      output.append("(");
-      output.append(square[0]);
-      output.append(",");
-      output.append(square[1]);
-      output.append(")");
-    }
 
+    output.append("[");
+    squares.forEach(ints -> output.append(toStringSquare(ints)));
     output.append("]");
+
     output.append(", buttons: ");
     output.append(buttons);
+
     output.append(", turns: ");
     output.append(turns);
 
