@@ -2,26 +2,40 @@ package lesagervecchio.patchwork;
 
 import java.util.*;
 
-public class Patch{
+public class Patch {
   private static final Map<Integer, Patch> patchList = new HashMap<>();
-  public static Patch of(int id) { return patchList.get(id); }
 
-/***************************************************************************/
+  public static Patch of(int id) {
+    return patchList.get(id);
+  }
+
+  /***************************************************************************/
   private final List<Integer[]> squares;
   private final int buttons;
   private final int turns;
-  public Patch (int id, List<Integer[]> squares, int buttons, int turns){
+
+  public Patch(int id, List<Integer[]> squares, int buttons, int turns) {
     Objects.requireNonNull(squares, "squares is null");
     this.squares = squares;
 
-    if (buttons < 0){ throw new IllegalArgumentException("buttons < 0"); }
+    if (buttons < 0) {
+      throw new IllegalArgumentException("buttons < 0");
+    }
     this.buttons = buttons;
 
-    if (turns < 0){ throw new IllegalArgumentException("turns < 0"); }
+    if (turns < 0) {
+      throw new IllegalArgumentException("turns < 0");
+    }
     this.turns = turns;
 
     patchList.put(id, this);
   }
+
+  public List<Integer[]> getSquares() { return squares; }
+
+  public int getButtons() { return buttons; }
+
+  public int getTurns() { return turns; }
 
   private String toStringSquare(Integer[] square){ return "(" + square[0] + "," + square[1] + ")"; }
 
