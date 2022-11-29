@@ -22,10 +22,20 @@ public class PlayerBoard {
       ;
   }
 
+  private void checkOutOfBound(Integer[] coordinate){
+    if(coordinate[0] >= SIZE_X && coordinate[1] >= SIZE_Y){
+      throw new IllegalArgumentException("patch(x, y) out of the board");
+    }
+  }
+
   public boolean put(Patch patch) {
     Objects.requireNonNull(patch, "patch is null");
+
+    var squares = patch.getSquares();
+
+    squares.forEach(this::checkOutOfBound);
     if (!contains(patch)) {
-      patch.getSquares().forEach(integers -> board.put(integers, 1));
+      squares.forEach(square -> board.put(square, 1));
       return true;
     }
     return false;
