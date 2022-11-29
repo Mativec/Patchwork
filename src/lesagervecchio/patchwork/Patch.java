@@ -31,13 +31,23 @@ public class Patch {
     patchList.put(id, this);
   }
 
+  /**
+   * Get coordinates(x, y) of the squares which form the patch.
+   * @return : a list of the squares.
+   */
   public List<Integer[]> getSquares() { return squares; }
 
+  /**
+   * Get the amoung of button required to buy this patch.
+   * @return : int
+   */
   public int getButtons() { return buttons; }
 
+  /**
+   * Get the amoung of turn to play to buy this patch.
+   * @return : int
+   */
   public int getTurns() { return turns; }
-
-  private String toStringSquare(Integer[] square){ return "(" + square[0] + "," + square[1] + ")"; }
 
   @Override
   public String toString() {
@@ -46,7 +56,7 @@ public class Patch {
     output.append("Patch : ");
 
     output.append("[");
-    squares.forEach(ints -> output.append(toStringSquare(ints)));
+    squares.forEach(square -> output.append("(").append(square[0]).append(",").append(square[1]).append(")"));
     output.append("]");
 
     output.append(", buttons: ");

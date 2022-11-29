@@ -12,7 +12,12 @@ public class PlayerBoard {
 
   public PlayerBoard() {}
 
-  //Can be made on a better way
+  /**
+   *
+   * @param patch : a patch in or out of the board
+   * @return boolean : if the operation succeeded or not.
+   * @throws NullPointerException : if patch is null
+   */
   public boolean contains(Patch patch) {
     Objects.requireNonNull(patch, "patch is null");
     return patch.getSquares()
@@ -22,12 +27,23 @@ public class PlayerBoard {
       ;
   }
 
+  /**
+   *
+   * @param coordinate : coordinate of a Patch
+   * @throws IllegalArgumentException : if coordinate out of bound
+   */
   private void checkOutOfBound(Integer[] coordinate){
     if(coordinate[0] >= SIZE_X && coordinate[1] >= SIZE_Y){
       throw new IllegalArgumentException("patch(x, y) out of the board");
     }
   }
 
+  /**
+   *
+   * @param patch : a patch in or out the board
+   * @return boolean : contains or not
+   * @throws NullPointerException : if patch is null
+   */
   public boolean put(Patch patch) {
     Objects.requireNonNull(patch, "patch is null");
 
