@@ -67,10 +67,7 @@ public class Patch {
       squares = squares.stream().parallel().toList(); //reverse the list
     }
     for(var coordinate : squares){
-      //switch X & Y coordinate
-      var tmp = coordinate[0];
-      coordinate[0] = coordinate[1];
-      coordinate[1] = tmp;
+      move(coordinate[1], coordinate[0]);
     }
   }
 

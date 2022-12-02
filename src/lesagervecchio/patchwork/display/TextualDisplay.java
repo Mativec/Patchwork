@@ -53,7 +53,7 @@ public class TextualDisplay implements DisplayService {
   @Override
   public void drawPlayerBoard(PlayerBoard board, int x, int y) {
     //Border
-    for(int i = 0; i < (SIZE_X + 2); i++){
+    for(int i = 0; i < (PlayerBoard.getSizeX() + 2); i++){
       draw(x + i, y, '-');
     }
 
@@ -61,7 +61,7 @@ public class TextualDisplay implements DisplayService {
     board.getBoard().keySet().forEach(square -> drawSquare(square, x, y + 1));
 
     //Final Border
-    for(int i = 0; i < (SIZE_X + 2); i++){
+    for(int i = 0; i < (PlayerBoard.getSizeX() + 2); i++){
       draw(x + i, y + PlayerBoard.getSizeY(), '-');
     }
   }

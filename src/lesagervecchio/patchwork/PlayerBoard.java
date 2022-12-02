@@ -22,8 +22,7 @@ public class PlayerBoard {
     return SIZE_Y;
   }
 
-  public PlayerBoard() {
-  }
+  public PlayerBoard() {}
 
   /**
    * @param patch : a patch in or out of the board
