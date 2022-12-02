@@ -19,6 +19,10 @@ public class PlayerBoard {
     this.sizeY = sizeY;
   }
 
+  public int getNbSquare() {
+    return nbSquare;
+  }
+
   public boolean contains(Patch newPatch) {
     Objects.requireNonNull(newPatch, "patch is null");
     for (Patch patch : board) {
@@ -30,22 +34,35 @@ public class PlayerBoard {
   }
 
   public boolean outOfBound(Integer[] newSquare) {
-    return newSquare[0] > sizeX && newSquare[1] > sizeY;
+    Objects.requireNonNull(newSquare, "square array is null");
+    return newSquare[0] > sizeX || newSquare[1] > sizeY;
   }
 
   public boolean canBePlaced(Patch patch) {
-    return patch.squares().stream().anyMatch(this::outOfBound) || contains(patch);
+    Objects.requireNonNull(patch, "patch is null");
+    return patch.squares().stream().noneMatch(this::outOfBound) && !contains(patch);
   }
 
   public boolean put(Patch newPatch) {
     Objects.requireNonNull(newPatch, "patch is null");
 
-    if (canBePlaced(newPatch)) {
+    if (!canBePlaced(newPatch)) {
       return false;
     } else {
       board.add(newPatch);
       nbSquare += Patches.size(newPatch);
       return true;
     }
+  }
+
+  /**
+   * Convert the playerBoard as one Patch
+   *
+   * @return : a Patch with all squares on board
+   */
+  public Patch asOne() {
+    List<Integer[]> list = new ArrayList<>();
+    board.forEach(patch -> list.addAll(patch.squares()));
+    return new Patch(list, 0, 0);
   }
 }

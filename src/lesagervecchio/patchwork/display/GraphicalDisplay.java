@@ -13,9 +13,4 @@ public final class GraphicalDisplay implements DisplayService{
   public void drawPlayerBoard(PlayerBoard board) {
 
   }
-
-  @Override
-  public void refresh() {
-
-  }
 }
