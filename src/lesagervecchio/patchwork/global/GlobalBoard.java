@@ -33,17 +33,9 @@ public class GlobalBoard {
 		return (player.position() >= postButton);
 	}
 	
-	public int idPlayerTurn(List <Player> players) {
-		//Méthode renvoyant l'id du joueur devant jouer
-		if(players.get(0).position() == players.get(1).position()) {
-			if(players.get(0).onTop() == true){
-				return 0;
-			}
-			return 1;
-		}
-		if(players.get(0).position() > players.get(1).position()) {
-			return 1;
-		}
-		return 0;
+	public int nextCaseButton(int pos) {
+		//Fonction renvoyant, en fonction de la position d'un joueur, la position de la prochaine
+		//case boutton
+		return buttons.stream().filter(u -> u > pos).findFirst().orElseGet(() -> 53);
 	}
 }
