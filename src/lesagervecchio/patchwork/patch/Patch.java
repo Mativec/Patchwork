@@ -1,4 +1,4 @@
-package lesagervecchio.patchwork;
+package lesagervecchio.patchwork.patch;
 
 import java.util.*;
 
@@ -10,7 +10,7 @@ public class Patch {
   }
 
   /***************************************************************************/
-  private final List<Integer[]> squares;
+  private List<Integer[]> squares;
   private final int buttons;
   private final int turns;
 
@@ -38,16 +38,41 @@ public class Patch {
   public List<Integer[]> getSquares() { return squares; }
 
   /**
-   * Get the amoung of button required to buy this patch.
+   * Get the amount of button required to buy this patch.
    * @return : int
    */
   public int getButtons() { return buttons; }
 
   /**
-   * Get the amoung of turn to play to buy this patch.
+   * Get the amount of turn to play to buy this patch.
    * @return : int
    */
   public int getTurns() { return turns; }
+
+  /**
+   * Move a Patch.
+   */
+  public void move(int targetX, int targetY){
+    for(var coordinate : squares){
+      coordinate[0] = coordinate[0] + targetX;
+      coordinate[1] = coordinate[1] + targetY;
+    }
+  }
+
+  /**
+   * turn the Patch on the right or the left.
+   */
+  public void turn(boolean left){
+    if(left){
+      squares = squares.stream().parallel().toList(); //reverse the list
+    }
+    for(var coordinate : squares){
+      //switch X & Y coordinate
+      var tmp = coordinate[0];
+      coordinate[0] = coordinate[1];
+      coordinate[1] = tmp;
+    }
+  }
 
   @Override
   public String toString() {
