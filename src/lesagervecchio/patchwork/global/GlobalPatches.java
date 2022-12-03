@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -33,11 +34,31 @@ public class GlobalPatches {
 			while((line = reader.readLine()) != null) {
 				numbers = line.split(" ");
 				System.out.println(numbers + " " + numbers[1] + " " + numbers[2] + " " + numbers[3]);
-				patchesById.put(Integer.valueOf(numbers[0]), new Patch({}, Integer.valueOf(numbers[1]), Integer.valueOf(numbers[2]), Integer.valueOf(numbers[3]));
+				System.out.println(Integer.toBinaryString(Integer.valueOf(numbers[5])));
+				System.out.println(Integer.toBinaryString(Integer.valueOf(numbers[6])));
+				System.out.println(Integer.toBinaryString(Integer.valueOf(numbers[7])));
+				System.out.println(Integer.toBinaryString(Integer.valueOf(numbers[8])));
+				patchesById.put(
+						Integer.valueOf(
+								numbers[0]
+								), new Patch(
+										List.of(
+												new Integer[] {0, 0}, new Integer[]{1, 1}
+										), Integer.valueOf(
+												numbers[1]
+										), Integer.valueOf(
+												numbers[2]
+										), Integer.valueOf(
+												numbers[3]
+										)
+								)
+						);
 				
 				//0 -> index, 1 -> coupbutton
 				//2 -> temps, 3 -> buttonplateau
 				//4 -> nbcases
+				//5 -> 1er 5*bit, 6 -> 2e 5*bit
+				//7 -> 3e 5*bit,  8 -> 4e 5*bit 
 			}
 		}catch(IOException e) {
 			System.err.println(e.getMessage());
@@ -45,6 +66,8 @@ public class GlobalPatches {
 			System.exit(1);
 			return;
 		}
+		System.out.println("Ici --> " + patchesById.get(1));
+		System.out.println("Ici --> " + patchesById.get(21));
 		orderPatches = (ArrayList<Integer>) IntStream.range(0, nbPatch).boxed().collect(Collectors.toList());
 		Random r = new Random();
 		for(var i = 0; i < nbPatch; i ++) {
