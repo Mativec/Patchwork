@@ -1,74 +1,51 @@
 package lesagervecchio.patchwork.patch;
 
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
 
-public class Patch {
-  private static final Map<Integer, Patch> patchList = new HashMap<>();
+public record Patch(List<Integer[]> squares, int buttons, int turns) {
 
-  public static Patch of(int id) {
-    return patchList.get(id);
-  }
-
-  /***************************************************************************/
-  private List<Integer[]> squares;
-  private final int buttons;
-  private final int turns;
-
-  public Patch(int id, List<Integer[]> squares, int buttons, int turns) {
+  public Patch {
     Objects.requireNonNull(squares, "squares is null");
-    this.squares = squares;
 
     if (buttons < 0) {
       throw new IllegalArgumentException("buttons < 0");
     }
-    this.buttons = buttons;
 
     if (turns < 0) {
       throw new IllegalArgumentException("turns < 0");
     }
-    this.turns = turns;
+  }
 
-    patchList.put(id, this);
+
+  /**
+   * turn this to the right
+   */
+  public Patch right() {
+    int tmp;
+    int indent = 0;
+    for (var coordinate : squares){
+      indent = indent < coordinate[1]? coordinate[1] : indent;
+      tmp = coordinate[0];
+      coordinate[0] = -coordinate[1];
+      coordinate[1] = tmp;
+    }
+    return Patches.move(this, indent, 0);
   }
 
   /**
-   * Get coordinates(x, y) of the squares which form the patch.
-   * @return : a list of the squares.
+   * Turn this to the left
    */
-  public List<Integer[]> getSquares() { return squares; }
-
-  /**
-   * Get the amount of button required to buy this patch.
-   * @return : int
-   */
-  public int getButtons() { return buttons; }
-
-  /**
-   * Get the amount of turn to play to buy this patch.
-   * @return : int
-   */
-  public int getTurns() { return turns; }
-
-  /**
-   * Move a Patch.
-   */
-  public void move(int targetX, int targetY){
-    for(var coordinate : squares){
-      coordinate[0] = coordinate[0] + targetX;
-      coordinate[1] = coordinate[1] + targetY;
+  public Patch left(){
+    int tmp;
+    int indent = 0;
+    for (var coordinate : squares){
+      indent = indent < coordinate[0]? coordinate[0] : indent;
+      tmp = coordinate[1];
+      coordinate[1] = -coordinate[0];
+      coordinate[0] = tmp;
     }
-  }
-
-  /**
-   * turn the Patch on the right or the left.
-   */
-  public void turn(boolean left){
-    if(left){
-      squares = squares.stream().parallel().toList(); //reverse the list
-    }
-    for(var coordinate : squares){
-      move(coordinate[1], coordinate[0]);
-    }
+    return Patches.move(this, 0, indent);
   }
 
   @Override
