@@ -1,107 +1,85 @@
-package lesagervecchio.patchwork;
+package lesagervecchio.patchwork.board;
 
 import lesagervecchio.patchwork.patch.Patch;
+import lesagervecchio.patchwork.patch.Patches;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 public class PlayerBoard {
-  private static final int SIZE_X = 9;
-  private static final int SIZE_Y = 9;
 
-  private final Map<Integer[], Integer> board = new HashMap<>();
+  private final int sizeX;
+  private final int sizeY;
+  private final List<Patch> board = new ArrayList<>();
+  private int nbSquare = 0;
 
-  public static int getSizeX() {
-    return SIZE_X;
+  public PlayerBoard(int sizeX, int sizeY) {
+    this.sizeX = sizeX;
+    this.sizeY = sizeY;
   }
-
-  public static int getSizeY() {
-    return SIZE_Y;
-  }
-
-  public PlayerBoard() {}
 
   /**
-   * @param patch : a patch in or out of the board
-   * @return boolean : if the operation succeeded or not.
-   * @throws NullPointerException : if patch is null
+   * Get many squares has been placed on board
    */
-  public boolean contains(Patch patch) {
+  public int getNbSquare() {
+    return nbSquare;
+  }
+
+
+  /**
+   * Check if we're trying to overwrite a patch on Board
+   * @param newPatch : New Patch trying to be placed on board
+   */
+  public boolean contains(Patch newPatch) {
+    Objects.requireNonNull(newPatch, "patch is null");
+    return board.stream().anyMatch(patch -> Patches.conflict(patch, newPatch));
+  }
+
+
+  /**
+   * Check if a square is being put outside of the board
+   */
+  public boolean outOfBound(Integer[] newSquare) {
+    Objects.requireNonNull(newSquare, "square array is null");
+    return newSquare[0] > sizeX || newSquare[1] > sizeY;
+  }
+
+
+  /**
+   *use contains and outOfBound to tell if a patch can be put on board
+   * @param patch : newer patch trying to be placed on board.
+   * @return can be placed or not
+   */
+  public boolean canBePlaced(Patch patch) {
     Objects.requireNonNull(patch, "patch is null");
-    return patch.getSquares()
-            .stream()
-            .mapToInt(integers -> board.getOrDefault(integers, 0))
-            .sum() != 0
-            ;
+    return patch.squares().stream().noneMatch(this::outOfBound) && !contains(patch);
   }
 
   /**
-   * @param coordinate : coordinate of a Patch
-   * @throws IllegalArgumentException : if coordinate out of bound
+   * Put newPatch on the board
+   * @return : succeeded or not
    */
-  private void checkOutOfBound(Integer[] coordinate) {
-    if (coordinate[0] >= SIZE_X && coordinate[1] >= SIZE_Y) {
-      throw new IllegalArgumentException("patch(x, y) out of the board");
-    }
-  }
+  public boolean put(Patch newPatch) {
+    Objects.requireNonNull(newPatch, "patch is null");
 
-  /**
-   * @param patch : a patch in or out the board
-   * @param x     : X coordinate to put the Patch (~ corner SE)
-   * @param y     : Y coordinate to put the Patch (~ corner SE)
-   * @return boolean : contains or not
-   * @throws NullPointerException : if patch is null
-   */
-  public boolean put(Patch patch, int x, int y) {
-    Objects.requireNonNull(patch, "patch is null");
-
-    patch.move(x, y);
-    var squares = patch.getSquares();
-
-    try {
-      squares.forEach(this::checkOutOfBound);
-    } catch (IllegalArgumentException e) {
+    if (!canBePlaced(newPatch)) {
       return false;
-    }
-
-    if (!contains(patch)) {
-      squares.forEach(square -> board.put(square, 1));
+    } else {
+      board.add(newPatch);
+      nbSquare += Patches.size(newPatch);
       return true;
     }
-    return false;
-  }
-
-  public Map<Integer[], Integer> getBoard() {
-    return board;
   }
 
   /**
-   * Make an action on every c
-   * @param action
+   * Convert the playerBoard as a Patch alone
+   *
+   * @return : a Patch with all squares on board
    */
-  public void forEach(BiConsumer<Integer[], Integer> action) {
-    var board = getBoard();
-    Integer[] key;
-    for (int x = 0; x < SIZE_X; x++) {
-      for (int y = 0; y < SIZE_Y; y++) {
-        key = new Integer[]{x, y};
-        action.accept(key, board.getOrDefault(key, 0));
-      }
-    }
-  }
-
-  @Override
-  public String toString() {
-    //TODO :  Remake with Stream
-    var output = new StringBuilder();
-
-    output.append("PlayerBoard{");
-    board.forEach((key, value) -> output.append("(").append(key[0]).append(",").append(key[1]).append(")"));
-    output.append('}');
-
-    return output.toString();
+  public Patch asOne() {
+    List<Integer[]> list = new ArrayList<>();
+    board.forEach(patch -> list.addAll(patch.squares()));
+    return new Patch(list, 0, 0);
   }
 }
