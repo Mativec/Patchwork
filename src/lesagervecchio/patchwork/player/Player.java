@@ -8,6 +8,8 @@ public record Player (String name, int jetons, int position, boolean onTop) {//r
 	
 	//private Board;
 	
+	//onTop est vrai si se situe au dessus d'un autre joueur, sinon faux
+	
 	public Player {
 		Objects.requireNonNull(name);
 		if(jetons < 0) {
@@ -28,7 +30,7 @@ public record Player (String name, int jetons, int position, boolean onTop) {//r
 		}else {
 			newPosition = movement + position;
 		}
-		if(positionOtherpPlayer == position) {
+		if(positionOtherpPlayer == newPosition) {
 			newOnTop = true;
 		}else {
 			newOnTop = false;
