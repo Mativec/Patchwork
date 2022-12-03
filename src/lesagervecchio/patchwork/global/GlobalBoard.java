@@ -16,7 +16,7 @@ public class GlobalBoard {
 	
 	private static List<Integer> buttons;
 	private static int numberCases;
-	
+
 	public GlobalBoard (){
 			numberCases = 53;
 			buttons = List.of(5, 11, 17, 23, 29, 35, 41, 47, 53);

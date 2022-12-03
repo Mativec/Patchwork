@@ -3,7 +3,7 @@ package lesagervecchio.patchwork.patch;
 import java.util.List;
 import java.util.Objects;
 
-public record Patch(List<Integer[]> squares, int buttons, int turns) {
+public record Patch(List<Integer[]> squares, int buttons, int turns, int bringedButtons) {
 
   public Patch {
     Objects.requireNonNull(squares, "squares is null");
@@ -14,6 +14,9 @@ public record Patch(List<Integer[]> squares, int buttons, int turns) {
 
     if (turns < 0) {
       throw new IllegalArgumentException("turns < 0");
+    }
+    if (bringedButtons < 0) {
+    	throw new IllegalArgumentException("bringedButtons < 0");
     }
   }
 

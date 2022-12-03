@@ -80,6 +80,6 @@ public class PlayerBoard {
   public Patch asOne() {
     List<Integer[]> list = new ArrayList<>();
     board.forEach(patch -> list.addAll(patch.squares()));
-    return new Patch(list, 0, 0);
+    return new Patch(list, 0, 0, 0);
   }
 }
