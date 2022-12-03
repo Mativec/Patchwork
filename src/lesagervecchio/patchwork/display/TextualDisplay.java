@@ -4,70 +4,40 @@ import lesagervecchio.patchwork.board.PlayerBoard;
 import lesagervecchio.patchwork.patch.Patch;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
-public class TextualDisplay implements DisplayService {
-
-  private static final int SIZE_X = 50;
-  private static final int SIZE_Y = 15;
-
-  private final List<String> screen = new ArrayList<>();
-
+public final class TextualDisplay implements DisplayService {
   @Override
-  public void init() {
-    for(int i = 0; i < SIZE_Y; i++){
-      screen.add(" ".repeat(SIZE_X));
-    }
+  public void drawPatch(Patch patch) {
+    Objects.requireNonNull(patch, "patch is null");
+    Map<Integer, ArrayList<Integer>> output = new HashMap<>();
+
+    patch.squares().forEach(
+      s -> output.computeIfAbsent(s[1], key -> new ArrayList<>()).add(s[0])
+    );
+    System.out.println(output
+      .values()
+      .stream()
+      .map(this::drawSquares)
+      .collect(Collectors.joining("\n"))
+    );
   }
 
-  /**
-   * draw pix on screen at (x, y)
-   */
-  private void draw(int x, int y, char pix){
-    if(x < SIZE_X && y < SIZE_Y){
-      var newLine = screen.get(y).toCharArray();
-      var tmp = new StringBuilder();
-
-      newLine[x] = pix;
-
-      for (char c : newLine) {
-        tmp.append(c);
-      }
-
-      screen.set(y, tmp.toString());
+  private String drawSquares(ArrayList<Integer> list) {
+    Objects.requireNonNull(list, "list is null");
+    var line = new StringBuilder();
+    for (int i = 0; i < 9; i++) {
+      line.append(list.contains(i) ? "[-]" : "   ");
     }
-  }
-
-  /**
-   * draw a square on (x, y) point
-   */
-  private void drawSquare(Integer[] coord, int x, int y){
-    draw(coord[0] + x, coord[1] + y, 'x');
+    return line.toString();
   }
 
   @Override
-  public void drawPatch(Patch patch, int x, int y) {
-    patch.getSquares().forEach(square -> drawSquare(square, x, y));
-  }
-
-  @Override
-  public void drawPlayerBoard(PlayerBoard board, int x, int y) {
-    //Border
-    for(int i = 0; i < (PlayerBoard.getSizeX() + 2); i++){
-      draw(x + i, y, '-');
-    }
-
-    //board
-    board.getBoard().keySet().forEach(square -> drawSquare(square, x, y + 1));
-
-    //Final Border
-    for(int i = 0; i < (PlayerBoard.getSizeX() + 2); i++){
-      draw(x + i, y + PlayerBoard.getSizeY(), '-');
-    }
-  }
-
-  @Override
-  public void refresh() {
-    screen.forEach(System.out::println);
+  public void drawPlayerBoard(PlayerBoard board) {
+    Objects.requireNonNull(board, "board is null");
+    drawPatch(board.asOne());
   }
 }
