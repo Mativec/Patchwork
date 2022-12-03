@@ -30,12 +30,40 @@ public class Main {
 
     System.out.println(board.put(new Patch(
       List.of(
-        new Integer[]{0, 10},
+        new Integer[]{0, 4},
         new Integer[]{10, 0}
       ), 0, 0)
     ));
 
+    var l = new Patch(List.of(
+      new Integer[]{0, 0},
+      new Integer[]{0, 1},
+      new Integer[]{1, 0},
+      new Integer[]{0, 2},
+      new Integer[]{2, 0}
+    ), 0, 0);
+    var l2 = new Patch(List.of(
+      new Integer[]{0, 0},
+      new Integer[]{0, 1},
+      new Integer[]{1, 0},
+      new Integer[]{0, 2},
+      new Integer[]{2, 0}
+    ), 0, 0);
+    var l3 = new Patch(List.of(
+      new Integer[]{0, 0},
+      new Integer[]{0, 1},
+      new Integer[]{1, 0},
+      new Integer[]{0, 2},
+      new Integer[]{2, 0}
+    ), 0, 0);
     display.drawPlayerBoard(board);
     System.out.println(board.getNbSquare());
+
+    System.out.println("\n");
+    display.drawPatch(l);
+    System.out.println("\n");
+    display.drawPatch(l2.right());
+    System.out.println("\n");
+    display.drawPatch(l3.left());
   }
 }
