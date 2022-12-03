@@ -1,7 +1,8 @@
 package lesagervecchio.patchwork.display;
 
 import lesagervecchio.patchwork.patch.Patch;
-import lesagervecchio.patchwork.PlayerBoard;
+
+import lesagervecchio.patchwork.board.PlayerBoard;
 
 public interface DisplayService {
   /**

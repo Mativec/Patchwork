@@ -1,6 +1,6 @@
 package lesagervecchio.patchwork.display;
 
-import lesagervecchio.patchwork.PlayerBoard;
+import lesagervecchio.patchwork.board.PlayerBoard;
 import lesagervecchio.patchwork.patch.Patch;
 
 import java.util.ArrayList;
