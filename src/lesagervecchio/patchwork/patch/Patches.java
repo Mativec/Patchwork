@@ -4,7 +4,11 @@ import java.util.Objects;
 
 public class Patches {
   /**
-   * Move a Patch.
+   * Move a patch
+   * @param patch : The Patch we want to move
+   * @param targetX : X coordinate where we want the Patch
+   * @param targetY : Y coordinate where we want the Patch
+   * @return patch moved
    */
   public static Patch move(Patch patch, int targetX, int targetY) {
     Objects.requireNonNull(patch, "patch is null");
@@ -14,15 +18,6 @@ public class Patches {
     }
     return patch;
   }
-
-  /**
-   * turn the Patch on the right or the left.
-   */
-  public static void left(Patch patch, boolean left){
-    Collections.reverse(patch.squares());
-    patch.squares().forEach(coordinate -> move(patch, coordinate[1], coordinate[0]));
-  }
-
 
   /**
    * Return True if p1 and p2 share a square
@@ -40,10 +35,14 @@ public class Patches {
     return false;
   }
 
+
+  /**
+   * Return how many squares composed patch
+   */
   public static long size(Patch patch) {
     return patch
-            .squares()
-            .size()
-            ;
+      .squares()
+      .size()
+      ;
   }
 }

@@ -19,7 +19,7 @@ public record Patch(List<Integer[]> squares, int buttons, int turns) {
 
 
   /**
-   * turn the Patch on the right
+   * turn this to the right
    */
   public Patch right() {
     int tmp;
@@ -33,6 +33,9 @@ public record Patch(List<Integer[]> squares, int buttons, int turns) {
     return Patches.move(this, indent, 0);
   }
 
+  /**
+   * Turn this to the left
+   */
   public Patch left(){
     int tmp;
     int indent = 0;
