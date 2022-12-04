@@ -42,7 +42,7 @@ public class PlayerBoard {
    */
   public boolean outOfBound(Integer[] newSquare) {
     Objects.requireNonNull(newSquare, "square array is null");
-    return newSquare[0] > sizeX || newSquare[1] > sizeY;
+    return newSquare[0] < 0 || newSquare[0] > sizeX || newSquare[1] < 0 || newSquare[1] > sizeY;
   }
 
 
@@ -66,6 +66,7 @@ public class PlayerBoard {
     Objects.requireNonNull(newPatch, "patch is null");
 
     if (!canBePlaced(newPatch)) {
+      System.err.println(newPatch + " can't be placed");
       return false;
     } else {
       board.add(newPatch);
@@ -91,5 +92,13 @@ public class PlayerBoard {
       .mapToLong(Patches::size)
       .sum();
     return squares >= 49;
+  }
+
+  public int getSizeX() {
+    return sizeX;
+  }
+
+  public int getSizeY() {
+    return sizeY;
   }
 }
