@@ -3,7 +3,9 @@ package lesagervecchio.patchwork.display;
 import lesagervecchio.patchwork.board.PlayerBoard;
 import lesagervecchio.patchwork.patch.Patch;
 
-
+/**
+ * @author Mativec (Matias VECCHIO)
+ */
 public sealed interface DisplayService permits TextualDisplay, GraphicalDisplay {
 
   /**

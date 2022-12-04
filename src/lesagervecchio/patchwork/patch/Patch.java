@@ -4,10 +4,10 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * @param squares : List of square that compose the Patch.
+ * @param squares    : List of square that compose the Patch.
  * @param buttonCost : cost of button.
- * @param turns   : cost of turns.
- * @param buttons : buttons on the Patch (add to player board) [not implemented yet]
+ * @param turns      : cost of turns.
+ * @param buttons    : buttons on the Patch (add to player board) [not implemented yet]
  * @author Mativec (Matias VECCHIO)
  */
 public record Patch(List<Integer[]> squares, int buttonCost, int turns, int buttons) {
@@ -22,7 +22,7 @@ public record Patch(List<Integer[]> squares, int buttonCost, int turns, int butt
       throw new IllegalArgumentException("turns < 0");
     }
     if (buttons < 0) {
-    	throw new IllegalArgumentException("buttons < 0");
+      throw new IllegalArgumentException("buttons < 0");
     }
   }
 

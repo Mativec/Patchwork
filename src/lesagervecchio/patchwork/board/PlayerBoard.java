@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
 
+/**
+ * @author Mativec (Matias VECCHIO)
+ */
 public class PlayerBoard {
   private final int sizeX;
   private final int sizeY;
@@ -44,7 +47,7 @@ public class PlayerBoard {
    */
   public boolean outOfBound(Integer[] newSquare) {
     Objects.requireNonNull(newSquare, "square array is null");
-    return newSquare[0] < 0 || newSquare[0] > sizeX || newSquare[1] < 0 || newSquare[1] > sizeY;
+    return newSquare[0] < 0 || newSquare[0] >= sizeX || newSquare[1] < 0 || newSquare[1] >= sizeY;
   }
 
 
@@ -90,6 +93,7 @@ public class PlayerBoard {
 
   /**
    * Check if this forms a square of 7x7
+   *
    * @return Bool : yes or not
    */
   public boolean hasBonusPatch() {
@@ -130,11 +134,14 @@ public class PlayerBoard {
 
     boolean placePhase = true;
     while (placePhase) {
-      System.out.println("Here's your board");
+      //System.out.println("Here's your board :");
+      System.out.println("Voici votre plateau :");
       display.drawPlayerBoard(this);
-      System.out.println("here's the patch you want to place: ");
+      //System.out.println("here's the patch you want to place: ");
+      System.out.println("Voici le patch que vous voulez ajouter au plateau :");
       display.drawPatch(patch);
-      System.out.println("[p] -> place \n[l/r] -> rotate [left/right]\n[n/w/e/s] -> move to the [north/west/east/south]");
+      //System.out.println("[p] -> place \n[l/r] -> rotate [left/right]\n[n/w/e/s] -> move to the [north/west/east/south]");
+      System.out.println("[p] -> placer \n[l/r] -> tourner [gauche/droite]\n[n/w/e/s] -> déplacer vers le [nord/ouest/est/sud]");
       String choice;
       do {
         choice = input.nextLine();
@@ -150,7 +157,8 @@ public class PlayerBoard {
         case "c" -> placePhase = false;
       }
     }
-    System.out.println("Here's your board now");
+    //System.out.println("Here's your board now :");
+    System.out.println("Voici donc votre plateau :");
     display.drawPlayerBoard(this);
   }
 }

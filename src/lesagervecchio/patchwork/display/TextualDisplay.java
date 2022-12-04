@@ -9,6 +9,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * @author Mativec (Matias VECCHIO)
+ */
 public final class TextualDisplay implements DisplayService {
   /**
    * Return a String which represent patch's display
@@ -39,7 +42,7 @@ public final class TextualDisplay implements DisplayService {
   public void drawPatch(Patch patch) {
     Objects.requireNonNull(patch, "patch is null");
     System.out.print(sketchPatch(patch).replaceAll("\\.", " "));
-    System.out.println("Buttons : " + patch.buttonCost() + " Turns: " + patch.turns());
+    System.out.println(patch);
   }
 
   /**
@@ -64,7 +67,7 @@ public final class TextualDisplay implements DisplayService {
   @Override
   public void drawPlayerBoard(PlayerBoard board) {
     Objects.requireNonNull(board, "board is null");
-    var line = "-".repeat(board.getSizeX());
+    var line = "-".repeat(board.getSizeX() * 3);
     System.out.println(line);
     System.out.println(sketchPatch(board.asOne()));
     System.out.println(line);
