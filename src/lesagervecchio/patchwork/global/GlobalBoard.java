@@ -1,5 +1,6 @@
 package lesagervecchio.patchwork.global;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -31,6 +32,20 @@ public class GlobalBoard {
 			return false;
 		}
 		return (player.position() >= postButton);
+	}
+	
+	public void printGlobalBoard(ArrayList<Player> players) {
+		var builder = new StringBuilder();
+		builder.append("0|");
+		if(players.get(0).position() <= players.get(1).position()) {
+			builder.append("J1->").append(players.get(0).position());
+			builder.append("|J2->").append(players.get(1).position());
+		}else {
+			builder.append("J2->").append(players.get(1).position());
+			builder.append("|J1->").append(players.get(0).position());			
+		}
+		builder.append("|53\n");
+		System.out.println(builder.toString());
 	}
 	
 	public int nextCaseButton(int pos) {

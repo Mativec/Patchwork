@@ -1,6 +1,7 @@
 package lesagervecchio.patchwork.game;
 
 import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
@@ -12,7 +13,7 @@ import lesagervecchio.patchwork.player.Player;
 public class Game { //nommer l'instance patchwork?
 // Une game est définit par une liste de ces joueurs,
 // par sa globaleBoard, ca globalPatches.
-	private ArrayList<Player> listPlayer;
+	private ArrayList<Player> listPlayer;//Faire un objet de listplayer permettrait de faciliter les operation sur lui
 	private GlobalPatches globalPatches;
 	private GlobalBoard globalBoard;
 	
@@ -64,22 +65,32 @@ public class Game { //nommer l'instance patchwork?
 		while(!verif) {
 			//Affichage patchs dans la liste des patchs avec la bonne méthodes.
 			globalPatches.printOrderPatches();
+			globalBoard.printGlobalBoard(listPlayer);
 			System.out.println("C'est à " + listPlayer.get(joueur).name() + " de jouer.\nQue faites vous?\n\n1. Aller à la prochaine case boutton --> b\n\n2. Choisir un des patchs a mettre sur le plateau --> 1 / 2 / 3");
 			Scanner scan = new Scanner(System.in);
 			char choix = scan.nextLine().charAt(0);
 			switch(choix) {//Penser a mettre a jour les onTop a chaque deplacements
 				case 'b' -> {	verif = !verif;
-								listPlayer.set(joueur, listPlayer.get(joueur).movePlayer(globalBoard.nextCaseButton(listPlayer.get(joueur).position()), listPlayer.get(joueur).position()));//Echange l'instance player d'index joueur par un player mise a jour par movePlayer, incomplet par rapport a la nouvelle valeur du onTop de l'autre joueur (pas dans tous les cas, mais donc a verifier)
+								listPlayer.set(joueur, listPlayer.get(joueur).movePlayer(globalBoard.nextCaseButton(listPlayer.get(joueur).position())));//Echange l'instance player d'index joueur par un player mise a jour par movePlayer, incomplet par rapport a la nouvelle valeur du onTop de l'autre joueur (pas dans tous les cas, mais donc a verifier)
 								listPlayer = updateListPlayer(joueur);
 							}
-				case '1' -> {	verif = !verif;
-				
+				case '1' -> {	if(globalPatches.checkPricePatch(listPlayer.get(joueur), 1) == true) {
+									listPlayer.set(joueur, globalPatches.buyPatch(listPlayer.get(joueur), 1));
+									listPlayer = updateListPlayer(joueur);
+									verif = !verif;
+								}
 				}
-				case '2' -> {	verif = !verif;
-				
+				case '2' -> {	if(globalPatches.checkPricePatch(listPlayer.get(joueur), 2) == true) {
+									listPlayer.set(joueur, globalPatches.buyPatch(listPlayer.get(joueur), 2));
+									listPlayer = updateListPlayer(joueur);	
+									verif = !verif;
+								}
 				}
-				case '3' -> {	verif = !verif;
-				
+				case '3' -> {	if(globalPatches.checkPricePatch(listPlayer.get(joueur), 3) == true) {
+									listPlayer.set(joueur, globalPatches.buyPatch(listPlayer.get(joueur), 3));
+									listPlayer = updateListPlayer(joueur);
+									verif = !verif;
+								}
 				}
 				default -> System.out.println("L'action n'est pas valide.\n");
 			}

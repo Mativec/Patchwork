@@ -21,7 +21,7 @@ public record Player (String name, int jetons, int position, boolean onTop) {//r
 		//var board = new Board();
 	}
 	
-	public Player movePlayer(int movement, int positionOtherpPlayer) {
+	public Player movePlayer(int movement) {
 		int newPosition;
 		boolean newOnTop;
 		
@@ -30,12 +30,7 @@ public record Player (String name, int jetons, int position, boolean onTop) {//r
 		}else {
 			newPosition = movement + position;
 		}
-		if(positionOtherpPlayer == newPosition) {
-			newOnTop = true;
-		}else {
-			newOnTop = false;
-		}
-		return new Player(name, jetons, newPosition, newOnTop);
+		return new Player(name, jetons, newPosition, onTop());
 	}
 	
 	public Player updateJetons(int upJetons) {

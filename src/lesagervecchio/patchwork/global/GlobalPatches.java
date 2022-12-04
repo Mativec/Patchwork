@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import lesagervecchio.patchwork.patch.Patch;
+import lesagervecchio.patchwork.player.Player;
 
 public class GlobalPatches {
 //Cet objet est seulement composé d'une liste d'id de patch.
@@ -79,6 +80,25 @@ public class GlobalPatches {
 		orderPatches.remove(indexPatch);
 	}
 	
+	public boolean checkPricePatch(Player player, int index) {
+		if((patchesById.get(orderPatches.get(index))).buttons() > player.jetons()) {
+			return false;
+		}
+		return true;
+	}
+	
+	public Player buyPatch(Player player, int index) {
+		// on considere qu'en rentrant dans cette fonction, le nombre de jetons du joueur est valide
+		Patch oldPatch = patchesById.get(orderPatches.get(index));
+		player = player.updateJetons(oldPatch.buttons());
+		player = player.movePlayer(oldPatch.turns());
+		//Ensuite, on supprimme oldPatch de globalPatches
+		patchesById.remove(orderPatches.get(index));
+		orderPatches.remove(index);
+		//Et on envoie dans le plateau du joueur le vieux patch ici!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		return player;
+	}
+	
 	public void printOrderPatches() {
 		//affiche les 8 prochains patchs de orderPatches
 		var builder1 = new StringBuilder();
@@ -111,7 +131,7 @@ public class GlobalPatches {
 		System.out.println(builder1.toString());
 		System.out.println("-".repeat(61));
 		System.out.println(builder2.toString());
-		System.out.println("+-----".repeat(10) + "+");
+		System.out.println("+-----".repeat(10) + "+\n");
 	}
 }
 

@@ -32,5 +32,7 @@ public class Main {
 		partie.takeAction(partie.idPlayerTurn());
 		
 		partie.takeAction(partie.idPlayerTurn());
+		
+		partie.takeAction(partie.idPlayerTurn());
 	}
 }
