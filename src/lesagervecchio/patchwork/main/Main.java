@@ -80,7 +80,7 @@ public class Main {
     board = new PlayerBoard(9, 9);
     boolean placePhase = true;
     while (placePhase) {
-      System.out.println("Here's your board (Size : (" + board.getSizeX() + ", " + board.getSizeY() + ") :");
+      System.out.println("Here's your board");
       display.drawPlayerBoard(board);
       System.out.println("here's the patch you want to place: ");
       display.drawPatch(first);

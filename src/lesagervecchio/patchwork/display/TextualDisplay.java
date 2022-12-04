@@ -43,5 +43,6 @@ public final class TextualDisplay implements DisplayService {
     System.out.println(line);
     System.out.println(sketchPatch(board.asOne()));
     System.out.println(line);
+    System.out.println("Size : (" + board.getSizeX() + ", " + board.getSizeY() + ")");
   }
 }
