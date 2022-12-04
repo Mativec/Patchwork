@@ -11,6 +11,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import lesagervecchio.patchwork.display.TextualDisplay;
 import lesagervecchio.patchwork.patch.Patch;
 import lesagervecchio.patchwork.patch.Patches;
 import lesagervecchio.patchwork.player.Player;
@@ -124,6 +125,8 @@ public class GlobalPatches {
 		patchesById.remove(orderPatches.get(index));
 		orderPatches.remove(index);
 		//Et on envoie dans le plateau du joueur le vieux patch ici!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		var display = new TextualDisplay();
+		player.playerBoard().patchPlacePhase(display, oldPatch);
 		return player;
 	}
 	
@@ -134,9 +137,9 @@ public class GlobalPatches {
 		//affiche les 8 prochains patchs de orderPatches
 		var builder1 = new StringBuilder();
 		var builder2 = new StringBuilder();
+		builder1.append("{");
+		builder2.append("{");
 		for(var i = 0; i < 10; i ++) {
-			builder1.append("|");
-			builder2.append("|");
 			String bringedButtons = String.valueOf(patchesById.get(orderPatches.get(i)).buttons());
 			String button = String.valueOf(patchesById.get(orderPatches.get(i)).buttonCost());
 			builder1.append(button);
@@ -154,15 +157,19 @@ public class GlobalPatches {
 			if(turn.length() == 1) {
 				builder1.append(" ");
 			}
+			if(i < 9) {
+				builder1.append("}{");
+				builder2.append("}{");
+			}
 			
 		}
-		builder1.append("|");
-		builder2.append("|");
-		System.out.println("+-----".repeat(10) + "+");
+		builder1.append("}");
+		builder2.append("}");
+		System.out.println("+-----+".repeat(10));
 		System.out.println(builder1.toString());
-		System.out.println("-".repeat(61));
+		System.out.println("-".repeat(70));
 		System.out.println(builder2.toString());
-		System.out.println("+-----".repeat(10) + "+\n");
+		System.out.println("+-----+".repeat(10) + "\n");
 	}
 }
 

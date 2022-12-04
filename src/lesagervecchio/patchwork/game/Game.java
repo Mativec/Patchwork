@@ -1,11 +1,10 @@
 package lesagervecchio.patchwork.game;
 
 import java.util.ArrayList;
-
-import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
 
+import lesagervecchio.patchwork.board.PlayerBoard;
 import lesagervecchio.patchwork.global.GlobalBoard;
 import lesagervecchio.patchwork.global.GlobalPatches;
 import lesagervecchio.patchwork.player.Player;
@@ -31,8 +30,8 @@ public class Game { //nommer l'instance patchwork?
 		Objects.requireNonNull(player1);
 		Objects.requireNonNull(player2);
 		listPlayer = new ArrayList<Player>();
-		listPlayer.add(new Player(player1, 5, 0, true));
-		listPlayer.add(new Player(player2, 5, 0, false));
+		listPlayer.add(new Player(new PlayerBoard(9, 9),player1, 5, 0, true));
+		listPlayer.add(new Player(new PlayerBoard(9, 9),player2, 5, 0, false));
 		this.globalPatches = new GlobalPatches();
 		this.globalBoard = new GlobalBoard();
 	}
@@ -44,6 +43,9 @@ public class Game { //nommer l'instance patchwork?
 	public int idPlayerTurn() {
 		//Méthode renvoyant l'id du joueur devant jouer
 		if(listPlayer.get(0).position() == listPlayer.get(1).position()) {
+			if(listPlayer.get(0).position() >= 52) {
+				return -1;
+			}
 			if(listPlayer.get(0).onTop() == true){
 				return 0;
 			}
@@ -66,15 +68,15 @@ public class Game { //nommer l'instance patchwork?
 		var newArray = new ArrayList<Player>();
 		if(listPlayer.get(0).position() == listPlayer.get(1).position()) {
 			if(top == 0) {
-				newArray.add(new Player(listPlayer.get(0).name(), listPlayer.get(0).jetons(), listPlayer.get(0).position(), true));
-				newArray.add(new Player(listPlayer.get(1).name(), listPlayer.get(1).jetons(), listPlayer.get(1).position(), false));
+				newArray.add(new Player(listPlayer.get(0).playerBoard(), listPlayer.get(0).name(), listPlayer.get(0).jetons(), listPlayer.get(0).position(), true));
+				newArray.add(new Player(listPlayer.get(1).playerBoard(), listPlayer.get(1).name(), listPlayer.get(1).jetons(), listPlayer.get(1).position(), false));
 			}else {
-				newArray.add(new Player(listPlayer.get(0).name(), listPlayer.get(0).jetons(), listPlayer.get(0).position(), false));
-				newArray.add(new Player(listPlayer.get(1).name(), listPlayer.get(1).jetons(), listPlayer.get(1).position(), true));
+				newArray.add(new Player(listPlayer.get(0).playerBoard(), listPlayer.get(0).name(), listPlayer.get(0).jetons(), listPlayer.get(0).position(), false));
+				newArray.add(new Player(listPlayer.get(1).playerBoard(), listPlayer.get(1).name(), listPlayer.get(1).jetons(), listPlayer.get(1).position(), true));
 			}
 		}else{
-			newArray.add(new Player(listPlayer.get(0).name(), listPlayer.get(0).jetons(), listPlayer.get(0).position(), false));
-			newArray.add(new Player(listPlayer.get(1).name(), listPlayer.get(1).jetons(), listPlayer.get(1).position(), false));
+			newArray.add(new Player(listPlayer.get(0).playerBoard(), listPlayer.get(0).name(), listPlayer.get(0).jetons(), listPlayer.get(0).position(), false));
+			newArray.add(new Player(listPlayer.get(1).playerBoard(), listPlayer.get(1).name(), listPlayer.get(1).jetons(), listPlayer.get(1).position(), false));
 		}
 		return newArray;
 	}
@@ -82,8 +84,12 @@ public class Game { //nommer l'instance patchwork?
 	/**
 	 * Method that simulate all the action that a player can take
 	 * @param joueur : the index of the player that is meant to play
+	 * @return : return true while the game is still going, return false if else.
 	 */
-	public void takeAction(int joueur) {
+	public boolean takeAction(int joueur) {
+		if(joueur == -1) {
+			return false;
+		}
 		var verif = false;
 		while(!verif) {
 			//Affichage patchs dans la liste des patchs avec la bonne méthodes.
@@ -98,19 +104,19 @@ public class Game { //nommer l'instance patchwork?
 								listPlayer = updateListPlayer(joueur);
 							}
 				case '1' -> {	if(globalPatches.checkPricePatch(listPlayer.get(joueur), 1) == true) {
-									listPlayer.set(joueur, globalPatches.buyPatch(listPlayer.get(joueur), 1));
+									listPlayer.set(joueur, globalPatches.buyPatch(listPlayer.get(joueur), 0));
 									listPlayer = updateListPlayer(joueur);
 									verif = !verif;
 								}
 				}
 				case '2' -> {	if(globalPatches.checkPricePatch(listPlayer.get(joueur), 2) == true) {
-									listPlayer.set(joueur, globalPatches.buyPatch(listPlayer.get(joueur), 2));
+									listPlayer.set(joueur, globalPatches.buyPatch(listPlayer.get(joueur), 1));
 									listPlayer = updateListPlayer(joueur);	
 									verif = !verif;
 								}
 				}
 				case '3' -> {	if(globalPatches.checkPricePatch(listPlayer.get(joueur), 3) == true) {
-									listPlayer.set(joueur, globalPatches.buyPatch(listPlayer.get(joueur), 3));
+									listPlayer.set(joueur, globalPatches.buyPatch(listPlayer.get(joueur), 2));
 									listPlayer = updateListPlayer(joueur);
 									verif = !verif;
 								}
@@ -118,6 +124,7 @@ public class Game { //nommer l'instance patchwork?
 				default -> System.out.println("L'action n'est pas valide.\n");
 			}
 		}
+		return true;
 		
 	}
 	

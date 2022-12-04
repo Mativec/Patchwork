@@ -28,7 +28,7 @@ public class GlobalBoard {
 	 */
 	public GlobalBoard (){
 			numberCases = 53;
-			buttons = List.of(5, 11, 17, 23, 29, 35, 41, 47, 53);
+			buttons = List.of(4, 10, 16, 22, 28, 34, 40, 46, 52);
 	}
 	
 	/**

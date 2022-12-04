@@ -2,13 +2,15 @@ package lesagervecchio.patchwork.player;
 
 import java.util.Objects;
 
+import lesagervecchio.patchwork.board.PlayerBoard;
+
 /**
  * Record about a player and his component
  * @author Paul LE SAGER
  * @author Mativec (Matias VECCHIO)
  */
 
-public record Player (String name, int jetons, int position, boolean onTop) {//record ou class?
+public record Player (PlayerBoard playerBoard,String name, int jetons, int position, boolean onTop) {//record ou class?
 	//Un joueur doit être définit par son nom, son nombre de jetons en main,
 	//son plateau de joueur et sa position sur le plateau global.
 	
@@ -18,6 +20,7 @@ public record Player (String name, int jetons, int position, boolean onTop) {//r
 	
 	/**
 	 * Initialization of a player
+	 * @param playerBoard : the personal board of this player
 	 * @param name : a string that represente the player name
 	 * @param jetons : the number of buttonCost that the player own
 	 * @param position : the place of the player on the globalBoard
@@ -31,6 +34,7 @@ public record Player (String name, int jetons, int position, boolean onTop) {//r
 		if(position < 0 || position > 39) {
 			throw new IllegalArgumentException("position < 0 or > 39");
 		}
+		Objects.requireNonNull(playerBoard);
 		//var board = new Board();
 	}
 	
@@ -47,7 +51,7 @@ public record Player (String name, int jetons, int position, boolean onTop) {//r
 		}else {
 			newPosition = movement + position;
 		}
-		return new Player(name, jetons, newPosition, onTop());
+		return new Player(playerBoard, name, jetons, newPosition, onTop());
 	}
 	
 	/**
@@ -60,6 +64,6 @@ public record Player (String name, int jetons, int position, boolean onTop) {//r
 		if(newJetons < 0) {
 			return null;
 		}
-		return new Player(name, newJetons, position, onTop);
+		return new Player(playerBoard, name, newJetons, position, onTop);
 	}
 }

@@ -22,15 +22,18 @@ public class Main {
 		//display.drawPlayerBoard(board);
 		//System.out.println(board.getNbSquare());
 
+		while(partie.takeAction(partie.idPlayerTurn())) {}	
+		
 		/*
 
 		System.out.println(partie.idPlayerTurn());
-
+	
 		partie.takeAction(partie.idPlayerTurn());
 
 		partie.takeAction(partie.idPlayerTurn());
 
 		partie.takeAction(partie.idPlayerTurn());
 		 */
+		scan.close();
 	}
 }
