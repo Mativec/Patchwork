@@ -3,6 +3,12 @@ package lesagervecchio.patchwork.patch;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * @param squares : List of square that compose the Patch.
+ * @param buttons : cost of buttons.
+ * @param turns   : cost of turns.
+ * @author Mativec (Matias VECCHIO)
+ */
 public record Patch(List<Integer[]> squares, int buttons, int turns) {
 
   public Patch {
@@ -19,7 +25,7 @@ public record Patch(List<Integer[]> squares, int buttons, int turns) {
 
 
   /**
-   * turn this to the right
+   * Turn this to the right
    */
   public Patch right() {
     int tmp;

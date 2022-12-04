@@ -1,11 +1,13 @@
 package lesagervecchio.patchwork.board;
 
+import lesagervecchio.patchwork.display.TextualDisplay;
 import lesagervecchio.patchwork.patch.Patch;
 import lesagervecchio.patchwork.patch.Patches;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Scanner;
 
 public class PlayerBoard {
   private final int sizeX;
@@ -86,6 +88,10 @@ public class PlayerBoard {
     return new Patch(list, 0, 0);
   }
 
+  /**
+   * Check if this forms a square of 7x7
+   * @return Bool : yes or not
+   */
   public boolean hasBonusPatch() {
     long squares = board
       .stream()
@@ -94,11 +100,57 @@ public class PlayerBoard {
     return squares >= 49;
   }
 
+  /**
+   * Return X size of this board
+   *
+   * @return int : horizontal size
+   */
   public int getSizeX() {
     return sizeX;
   }
 
+  /**
+   * Return Y size of this board
+   *
+   * @return int : vertical size
+   */
   public int getSizeY() {
     return sizeY;
+  }
+
+
+  /**
+   * Manage the game phase where a player want to place a Patch on his board (this)
+   *
+   * @param patch : The Patch wanted to be placed on this.
+   */
+  public void patchPlacePhase(TextualDisplay display, Patch patch) {
+    List<String> inputList = List.of("p", "l", "r", "n", "w", "e", "s", "c");
+    var input = new Scanner(System.in);
+
+    boolean placePhase = true;
+    while (placePhase) {
+      System.out.println("Here's your board");
+      display.drawPlayerBoard(this);
+      System.out.println("here's the patch you want to place: ");
+      display.drawPatch(patch);
+      System.out.println("[p] -> place \n[l/r] -> rotate [left/right]\n[n/w/e/s] -> move to the [north/west/east/south]");
+      String choice;
+      do {
+        choice = input.nextLine();
+      } while (inputList.stream().noneMatch(choice::equals));
+      switch (choice) {
+        case "p" -> placePhase = !put(patch);
+        case "l" -> patch.left();
+        case "r" -> patch.right();
+        case "n" -> Patches.move(patch, 0, -1);
+        case "w" -> Patches.move(patch, -1, 0);
+        case "e" -> Patches.move(patch, 1, 0);
+        case "s" -> Patches.move(patch, 0, 1);
+        case "c" -> placePhase = false;
+      }
+    }
+    System.out.println("Here's your board now");
+    display.drawPlayerBoard(this);
   }
 }

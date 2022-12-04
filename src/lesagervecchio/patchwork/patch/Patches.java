@@ -2,6 +2,11 @@ package lesagervecchio.patchwork.patch;
 
 import java.util.Objects;
 
+/**
+ * @author Mativec (Matias VECCHIO)
+ *
+ * Some static methods on Patch
+ */
 public class Patches {
   /**
    * Move a patch

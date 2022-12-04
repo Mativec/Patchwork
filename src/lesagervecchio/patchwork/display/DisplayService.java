@@ -9,12 +9,12 @@ public sealed interface DisplayService permits TextualDisplay, GraphicalDisplay 
   /**
    * Draw a Patch on screen
    *
-   * @param patch : Patch
+   * @param patch : Patch we want to show on screen.
    */
   void drawPatch(Patch patch);
 
   /**
-   * @param board : a Player Board
+   * @param board : the Player Board we want to show
    */
   void drawPlayerBoard(PlayerBoard board);
 }
