@@ -33,27 +33,23 @@ public class GlobalPatches {
 			nbPatch = Integer.valueOf(line = reader.readLine());
 			while((line = reader.readLine()) != null) {
 				numbers = line.split(" ");
-				System.out.println(numbers + " " + numbers[1] + " " + numbers[2] + " " + numbers[3]);
-				System.out.println(Integer.toBinaryString(Integer.valueOf(numbers[5])));
-				System.out.println(Integer.toBinaryString(Integer.valueOf(numbers[6])));
-				System.out.println(Integer.toBinaryString(Integer.valueOf(numbers[7])));
-				System.out.println(Integer.toBinaryString(Integer.valueOf(numbers[8])));
+
 				patchesById.put(
-						Integer.valueOf(
-								numbers[0]
-								), new Patch(
-										List.of(
-												new Integer[] {0, 0}, new Integer[]{1, 1}
-										), Integer.valueOf(
-												numbers[1]
-										), Integer.valueOf(
-												numbers[2]
-										), Integer.valueOf(
-												numbers[3]
-										)
-								)
-						);
-				
+					Integer.valueOf(
+						numbers[0]
+					),
+					Patch.binToPatch(
+						List.of(
+							numbers[5], numbers[6], numbers[7], numbers[8]
+						), Integer.valueOf(
+							numbers[1]
+						), Integer.valueOf(
+							numbers[2]
+						), Integer.valueOf(
+							numbers[3]
+						)
+					)
+				);
 				//0 -> index, 1 -> coupbutton
 				//2 -> temps, 3 -> buttonplateau
 				//4 -> nbcases
@@ -66,8 +62,6 @@ public class GlobalPatches {
 			System.exit(1);
 			return;
 		}
-		System.out.println("Ici --> " + patchesById.get(1));
-		System.out.println("Ici --> " + patchesById.get(21));
 		orderPatches = (ArrayList<Integer>) IntStream.range(0, nbPatch).boxed().collect(Collectors.toList());
 		Random r = new Random();
 		for(var i = 0; i < nbPatch; i ++) {
@@ -84,4 +78,42 @@ public class GlobalPatches {
 		}
 		orderPatches.remove(indexPatch);
 	}
+	
+	public void printOrderPatches() {
+		//affiche les 8 prochains patchs de orderPatches
+		var builder1 = new StringBuilder();
+		var builder2 = new StringBuilder();
+		for(var i = 0; i < 10; i ++) {
+			builder1.append("|");
+			builder2.append("|");
+			String bringedButtons = String.valueOf(patchesById.get(orderPatches.get(i)).bringedButtons());
+			String button = String.valueOf(patchesById.get(orderPatches.get(i)).buttons());
+			builder1.append(button);
+			builder2.append(bringedButtons);
+			if(button.length() == 1) {
+				builder1.append(" ");
+			}
+			if(bringedButtons.length() == 1) {
+				builder2.append(" ");
+			}
+			builder1.append("|");
+			builder2.append("|  ");
+			String turn = String.valueOf(patchesById.get(orderPatches.get(i)).turns());
+			builder1.append(turn);
+			if(turn.length() == 1) {
+				builder1.append(" ");
+			}
+			
+		}
+		builder1.append("|");
+		builder2.append("|");
+		System.out.println("+-----".repeat(10) + "+");
+		System.out.println(builder1.toString());
+		System.out.println("-".repeat(61));
+		System.out.println(builder2.toString());
+		System.out.println("+-----".repeat(10) + "+");
+	}
 }
+
+
+

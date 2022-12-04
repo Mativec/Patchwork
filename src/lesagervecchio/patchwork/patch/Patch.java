@@ -1,5 +1,6 @@
 package lesagervecchio.patchwork.patch;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -50,7 +51,24 @@ public record Patch(List<Integer[]> squares, int buttons, int turns, int bringed
     }
     return Patches.move(this, 0, indent);
   }
-
+  
+  public static Patch binToPatch(List<String> listBin, int buttons, int turns, int bringedButtons) {
+	  //Méthode tradusant un code binaire a 20 bits en un List<Integer[]>, represantant donc un patch
+	  var list = new ArrayList<Integer[]>();
+	  int y = 0;
+	  for(var bits : listBin) {
+		  String bin = Integer.toBinaryString(Integer.valueOf(bits));
+		  bin = String.format("%5s", bin).replaceAll(" ", "0");
+		  for(var x = 0; x < bin.length(); x ++) {
+			  if(bin.charAt(x) == '1') {
+				  list.add(new Integer[]{x, y});
+			  }
+		  }
+		  y ++;
+	  }
+	  return new Patch(List.copyOf(list), buttons, turns, bringedButtons);
+  }
+  
   @Override
   public String toString() {
     var output = new StringBuilder();

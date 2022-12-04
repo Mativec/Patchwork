@@ -62,6 +62,8 @@ public class Game { //nommer l'instance patchwork?
 	public void takeAction(int joueur) {
 		var verif = false;
 		while(!verif) {
+			//Affichage patchs dans la liste des patchs avec la bonne méthodes.
+			globalPatches.printOrderPatches();
 			System.out.println("C'est à " + listPlayer.get(joueur).name() + " de jouer.\nQue faites vous?\n\n1. Aller à la prochaine case boutton --> b\n\n2. Choisir un des patchs a mettre sur le plateau --> 1 / 2 / 3");
 			Scanner scan = new Scanner(System.in);
 			char choix = scan.nextLine().charAt(0);
