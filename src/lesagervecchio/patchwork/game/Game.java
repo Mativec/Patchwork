@@ -9,6 +9,11 @@ import java.util.Scanner;
 import lesagervecchio.patchwork.global.GlobalBoard;
 import lesagervecchio.patchwork.global.GlobalPatches;
 import lesagervecchio.patchwork.player.Player;
+/**
+ * Class about a game and its components
+ * @author Paul LE SAGER
+ * @author Mativec (Matias VECCHIO)
+ */
 
 public class Game { //nommer l'instance patchwork?
 // Une game est définit par une liste de ces joueurs,
@@ -17,6 +22,11 @@ public class Game { //nommer l'instance patchwork?
 	private GlobalPatches globalPatches;
 	private GlobalBoard globalBoard;
 	
+	/**
+	 * Initialisation of a Game
+	 * @param player1 : the name of the first player
+	 * @param player2 : the name of the second player
+	 */
 	public Game(String player1, String player2) {
 		Objects.requireNonNull(player1);
 		Objects.requireNonNull(player2);
@@ -27,6 +37,10 @@ public class Game { //nommer l'instance patchwork?
 		this.globalBoard = new GlobalBoard();
 	}
 	
+	/**
+	 * Method that return the id of the player that is meant to be the next to play
+	 * @return : the id of the player which it is the turn to play.
+	 */
 	public int idPlayerTurn() {
 		//Méthode renvoyant l'id du joueur devant jouer
 		if(listPlayer.get(0).position() == listPlayer.get(1).position()) {
@@ -41,6 +55,11 @@ public class Game { //nommer l'instance patchwork?
 		return 0;
 	}
 	
+	/**
+	 * Method that update the onTop parameter of all players in a list of player
+	 * @param top : if one of the player in on top of the other, it would the one with the index top
+	 * @return : the new version of the listPlayer
+	 */
 	public ArrayList<Player> updateListPlayer(int top){
 		//Méthode permettant de mettre a jour le onTop des joueurs dans listPayer
 		//Si les deux players ont les même coordonnées, le topieme player dans listPlayer sera onTop
@@ -60,6 +79,10 @@ public class Game { //nommer l'instance patchwork?
 		return newArray;
 	}
 	
+	/**
+	 * Method that simulate all the action that a player can take
+	 * @param joueur : the index of the player that is meant to play
+	 */
 	public void takeAction(int joueur) {
 		var verif = false;
 		while(!verif) {

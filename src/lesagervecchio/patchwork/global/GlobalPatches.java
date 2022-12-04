@@ -1,6 +1,7 @@
 package lesagervecchio.patchwork.global;
 
 import java.io.IOException;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -13,6 +14,12 @@ import java.util.stream.IntStream;
 import lesagervecchio.patchwork.patch.Patch;
 import lesagervecchio.patchwork.player.Player;
 
+/**
+ * Class about the patches and their storage
+ * @author Paul LE SAGER
+ * @author Mativec (Matias VECCHIO)
+ */
+
 public class GlobalPatches {
 //Cet objet est seulement composé d'une liste d'id de patch.
 //Le but de cet objet est renseigner sur l'ordre des patchs sur le plateau.
@@ -21,6 +28,9 @@ public class GlobalPatches {
 	private ArrayList<Integer> orderPatches;
 	private HashMap<Integer, Patch> patchesById;
 	
+	/**
+	 * Initialization of the class 'GlobalPatches'
+	 */
 	public GlobalPatches() {
 //On initialise dans le constructeur le positionnement des patchs les uns
 //par rapport aux autres.
@@ -73,6 +83,11 @@ public class GlobalPatches {
 		}
 	}
 	
+	/**
+	 * Method that removes the indexPatch patch from orderPatches.
+	 * @param indexPatch : int representing the index of the right patch to remove from orderPatches
+	 * 
+	 */
 	public void removePatch(int indexPatch) {
 		if(indexPatch < 0 || indexPatch > nbPatch - 1) {
 			throw new IllegalArgumentException("indexPatch < 0 or indexPatch > nbPatch");
@@ -80,6 +95,12 @@ public class GlobalPatches {
 		orderPatches.remove(indexPatch);
 	}
 	
+	/**
+	 * Method that check for the price to buy the Patch put in parameter
+	 * @param player : the player that wish to buy the patch
+	 * @param index : an int that represent the location of the needed patch in patchesById
+	 * @return : false if the player can not afford to buy the patch, and true if else.
+	 */
 	public boolean checkPricePatch(Player player, int index) {
 		if((patchesById.get(orderPatches.get(index))).buttons() > player.jetons()) {
 			return false;
@@ -87,6 +108,12 @@ public class GlobalPatches {
 		return true;
 	}
 	
+	/**
+	 * Method call of the other method needed to a player to buy a patch
+	 * @param player : the player that want (and can) buy a patch
+	 * @param index : an int that represent the location of the needed patch in patchesById
+	 * @return : the new version of the player, with less buttons to spend and more patches
+	 */
 	public Player buyPatch(Player player, int index) {
 		// on considere qu'en rentrant dans cette fonction, le nombre de jetons du joueur est valide
 		Patch oldPatch = patchesById.get(orderPatches.get(index));
@@ -99,6 +126,9 @@ public class GlobalPatches {
 		return player;
 	}
 	
+	/**
+	 * Method that display orderPatches.
+	 */
 	public void printOrderPatches() {
 		//affiche les 8 prochains patchs de orderPatches
 		var builder1 = new StringBuilder();

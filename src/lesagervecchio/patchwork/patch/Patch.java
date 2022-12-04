@@ -52,6 +52,14 @@ public record Patch(List<Integer[]> squares, int buttons, int turns, int bringed
     return Patches.move(this, 0, indent);
   }
   
+  /**
+   * Method that convert a list of string and three int in a Patch
+   * @param listBin : a list of String that represent a patch disposition
+   * @param buttons : the cost of the patch that will be created
+   * @param turns : the number of time that will give the patch
+   * @param bringedButtons : the number of buttons that the patch will bring to a player personnal board
+   * @return the patch that will be created.
+   */
   public static Patch binToPatch(List<String> listBin, int buttons, int turns, int bringedButtons) {
 	  //Méthode tradusant un code binaire a 20 bits en un List<Integer[]>, represantant donc un patch
 	  var list = new ArrayList<Integer[]>();
