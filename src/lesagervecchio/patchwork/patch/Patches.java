@@ -5,7 +5,8 @@ import java.util.Objects;
 public class Patches {
   /**
    * Move a patch
-   * @param patch : The Patch we want to move
+   *
+   * @param patch   : The Patch we want to move
    * @param targetX : X coordinate where we want the Patch
    * @param targetY : Y coordinate where we want the Patch
    * @return patch moved

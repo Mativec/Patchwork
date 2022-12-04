@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Objects;
 
 public class PlayerBoard {
-
   private final int sizeX;
   private final int sizeY;
   private final List<Patch> board = new ArrayList<>();
@@ -29,6 +28,7 @@ public class PlayerBoard {
 
   /**
    * Check if we're trying to overwrite a patch on Board
+   *
    * @param newPatch : New Patch trying to be placed on board
    */
   public boolean contains(Patch newPatch) {
@@ -47,7 +47,8 @@ public class PlayerBoard {
 
 
   /**
-   *use contains and outOfBound to tell if a patch can be put on board
+   * use contains and outOfBound to tell if a patch can be put on board
+   *
    * @param patch : newer patch trying to be placed on board.
    * @return can be placed or not
    */
@@ -58,6 +59,7 @@ public class PlayerBoard {
 
   /**
    * Put newPatch on the board
+   *
    * @return : succeeded or not
    */
   public boolean put(Patch newPatch) {
@@ -81,5 +83,13 @@ public class PlayerBoard {
     List<Integer[]> list = new ArrayList<>();
     board.forEach(patch -> list.addAll(patch.squares()));
     return new Patch(list, 0, 0);
+  }
+
+  public boolean hasBonusPatch() {
+    long squares = board
+      .stream()
+      .mapToLong(Patches::size)
+      .sum();
+    return squares >= 49;
   }
 }

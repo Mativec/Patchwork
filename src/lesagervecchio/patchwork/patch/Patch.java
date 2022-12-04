@@ -24,8 +24,8 @@ public record Patch(List<Integer[]> squares, int buttons, int turns) {
   public Patch right() {
     int tmp;
     int indent = 0;
-    for (var coordinate : squares){
-      indent = indent < coordinate[1]? coordinate[1] : indent;
+    for (var coordinate : squares) {
+      indent = indent < coordinate[1] ? coordinate[1] : indent;
       tmp = coordinate[0];
       coordinate[0] = -coordinate[1];
       coordinate[1] = tmp;
@@ -36,11 +36,11 @@ public record Patch(List<Integer[]> squares, int buttons, int turns) {
   /**
    * Turn this to the left
    */
-  public Patch left(){
+  public Patch left() {
     int tmp;
     int indent = 0;
-    for (var coordinate : squares){
-      indent = indent < coordinate[0]? coordinate[0] : indent;
+    for (var coordinate : squares) {
+      indent = indent < coordinate[0] ? coordinate[0] : indent;
       tmp = coordinate[1];
       coordinate[1] = -coordinate[0];
       coordinate[0] = tmp;
