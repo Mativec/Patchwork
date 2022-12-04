@@ -19,7 +19,7 @@ public record Player (String name, int jetons, int position, boolean onTop) {//r
 	/**
 	 * Initialization of a player
 	 * @param name : a string that represente the player name
-	 * @param jetons : the number of buttons that the player own
+	 * @param jetons : the number of buttonCost that the player own
 	 * @param position : the place of the player on the globalBoard
 	 * @param onTop : allow to know, in the case of multiple player being at the same position, to know wich one in on top of the other.
 	 */
@@ -51,8 +51,8 @@ public record Player (String name, int jetons, int position, boolean onTop) {//r
 	}
 	
 	/**
-	 * Method that change the amount of buttons that a player own.
-	 * @param upJetons : the number of buttons to change
+	 * Method that change the amount of buttonCost that a player own.
+	 * @param upJetons : the number of buttonCost to change
 	 * @return : the new Player
 	 */
 	public Player updateJetons(int upJetons) {

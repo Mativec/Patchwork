@@ -2,31 +2,27 @@ package lesagervecchio.patchwork.patch;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * @param squares : List of square that compose the Patch.
- * @param buttons : cost of buttons.
+ * @param buttonCost : cost of button.
  * @param turns   : cost of turns.
+ * @param buttons
  * @author Mativec (Matias VECCHIO)
  */
-public record Patch(List<Integer[]> squares, int buttons, int turns, int bringedButtons) {
+public record Patch(List<Integer[]> squares, int buttonCost, int turns, int buttons) {
   public Patch {
     Objects.requireNonNull(squares, "squares is null");
-    this.squares = squares;
 
-    if (buttons < 0) {
-      throw new IllegalArgumentException("buttons < 0");
+    if (buttonCost < 0) {
+      throw new IllegalArgumentException("buttonCost < 0");
     }
-    this.buttons = buttons;
 
     if (turns < 0) {
       throw new IllegalArgumentException("turns < 0");
     }
-    if (bringedButtons < 0) {
-    	throw new IllegalArgumentException("bringedButtons < 0");
+    if (buttons < 0) {
+    	throw new IllegalArgumentException("buttons < 0");
     }
   }
 
@@ -61,31 +57,6 @@ public record Patch(List<Integer[]> squares, int buttons, int turns, int bringed
     return Patches.move(this, 0, indent);
   }
 
-  /**
-   * Method that convert a list of string and three int in a Patch
-   * @param listBin : a list of String that represent a patch disposition
-   * @param buttons : the cost of the patch that will be created
-   * @param turns : the number of time that will give the patch
-   * @param bringedButtons : the number of buttons that the patch will bring to a player personnal board
-   * @return the patch that will be created.
-   */
-  public static Patch binToPatch(List<String> listBin, int buttons, int turns, int bringedButtons) {
-	  //Méthode tradusant un code binaire a 20 bits en un List<Integer[]>, represantant donc un patch
-	  var list = new ArrayList<Integer[]>();
-	  int y = 0;
-	  for(var bits : listBin) {
-		  String bin = Integer.toBinaryString(Integer.valueOf(bits));
-		  bin = String.format("%5s", bin).replaceAll(" ", "0");
-		  for(var x = 0; x < bin.length(); x ++) {
-			  if(bin.charAt(x) == '1') {
-				  list.add(new Integer[]{x, y});
-			  }
-		  }
-		  y ++;
-	  }
-	  return new Patch(List.copyOf(list), buttons, turns, bringedButtons);
-  }
-
   @Override
   public String toString() {
     var output = new StringBuilder();
@@ -96,8 +67,8 @@ public record Patch(List<Integer[]> squares, int buttons, int turns, int bringed
     squares.forEach(square -> output.append("(").append(square[0]).append(",").append(square[1]).append(")"));
     output.append("]");
 
-    output.append(", buttons: ");
-    output.append(buttons);
+    output.append(", buttonCost: ");
+    output.append(buttonCost);
 
     output.append(", turns: ");
     output.append(turns);

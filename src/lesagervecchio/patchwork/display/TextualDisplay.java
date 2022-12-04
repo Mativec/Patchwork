@@ -39,7 +39,7 @@ public final class TextualDisplay implements DisplayService {
   public void drawPatch(Patch patch) {
     Objects.requireNonNull(patch, "patch is null");
     System.out.print(sketchPatch(patch).replaceAll("\\.", " "));
-    System.out.println("Buttons : " + patch.buttons() + " Turns: " + patch.turns());
+    System.out.println("Buttons : " + patch.buttonCost() + " Turns: " + patch.turns());
   }
 
   /**

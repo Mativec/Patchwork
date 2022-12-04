@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import lesagervecchio.patchwork.patch.Patch;
+import lesagervecchio.patchwork.patch.Patches;
 import lesagervecchio.patchwork.player.Player;
 
 /**
@@ -26,7 +27,7 @@ public class GlobalPatches {
 	
 	private static int nbPatch;
 	private ArrayList<Integer> orderPatches;
-	private HashMap<Integer, Patch> patchesById;
+	private final HashMap<Integer, Patch> patchesById;
 	
 	/**
 	 * Initialization of the class 'GlobalPatches'
@@ -35,11 +36,11 @@ public class GlobalPatches {
 //On initialise dans le constructeur le positionnement des patchs les uns
 //par rapport aux autres.
 // Ici on ne prend donc que les id (de 0 à nbPatch - 1)
-		patchesById = new HashMap<Integer, Patch>();
+		patchesById = new HashMap<>();
 		var path = Path.of("stockage_patchs");
 		try(var reader = Files.newBufferedReader(path)){
 			String line;
-			String numbers[];
+			String[] numbers;
 			//while((line = reader.readLine()) != null) {
 			nbPatch = Integer.valueOf(line = reader.readLine());
 			while((line = reader.readLine()) != null) {
@@ -49,7 +50,7 @@ public class GlobalPatches {
 					Integer.valueOf(
 						numbers[0]
 					),
-					Patch.binToPatch(
+					Patches.binToPatch(
 						List.of(
 							numbers[5], numbers[6], numbers[7], numbers[8]
 						), Integer.valueOf(
@@ -102,7 +103,7 @@ public class GlobalPatches {
 	 * @return : false if the player can not afford to buy the patch, and true if else.
 	 */
 	public boolean checkPricePatch(Player player, int index) {
-		if((patchesById.get(orderPatches.get(index))).buttons() > player.jetons()) {
+		if((patchesById.get(orderPatches.get(index))).buttonCost() > player.jetons()) {
 			return false;
 		}
 		return true;
@@ -112,12 +113,12 @@ public class GlobalPatches {
 	 * Method call of the other method needed to a player to buy a patch
 	 * @param player : the player that want (and can) buy a patch
 	 * @param index : an int that represent the location of the needed patch in patchesById
-	 * @return : the new version of the player, with less buttons to spend and more patches
+	 * @return : the new version of the player, with less buttonCost to spend and more patches
 	 */
 	public Player buyPatch(Player player, int index) {
 		// on considere qu'en rentrant dans cette fonction, le nombre de jetons du joueur est valide
 		Patch oldPatch = patchesById.get(orderPatches.get(index));
-		player = player.updateJetons(oldPatch.buttons());
+		player = player.updateJetons(oldPatch.buttonCost());
 		player = player.movePlayer(oldPatch.turns());
 		//Ensuite, on supprimme oldPatch de globalPatches
 		patchesById.remove(orderPatches.get(index));
@@ -136,8 +137,8 @@ public class GlobalPatches {
 		for(var i = 0; i < 10; i ++) {
 			builder1.append("|");
 			builder2.append("|");
-			String bringedButtons = String.valueOf(patchesById.get(orderPatches.get(i)).bringedButtons());
-			String button = String.valueOf(patchesById.get(orderPatches.get(i)).buttons());
+			String bringedButtons = String.valueOf(patchesById.get(orderPatches.get(i)).buttons());
+			String button = String.valueOf(patchesById.get(orderPatches.get(i)).buttonCost());
 			builder1.append(button);
 			builder2.append(bringedButtons);
 			if(button.length() == 1) {
