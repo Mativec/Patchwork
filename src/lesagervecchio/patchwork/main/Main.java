@@ -1,13 +1,8 @@
 package lesagervecchio.patchwork.main;
 
-import java.util.List;
-import java.util.Scanner;
-
 import lesagervecchio.patchwork.game.Game;
-import lesagervecchio.patchwork.patch.Patch;
-import lesagervecchio.patchwork.patch.Patches;
-import lesagervecchio.patchwork.board.PlayerBoard;
-import lesagervecchio.patchwork.display.TextualDisplay;
+
+import java.util.Scanner;
 
 public class Main {
 	public static void main(String[] args) {
@@ -26,13 +21,16 @@ public class Main {
 
 		//display.drawPlayerBoard(board);
 		//System.out.println(board.getNbSquare());
-	    
+
+		/*
+
 		System.out.println(partie.idPlayerTurn());
-		
+
 		partie.takeAction(partie.idPlayerTurn());
-		
+
 		partie.takeAction(partie.idPlayerTurn());
-		
+
 		partie.takeAction(partie.idPlayerTurn());
+		 */
 	}
 }
