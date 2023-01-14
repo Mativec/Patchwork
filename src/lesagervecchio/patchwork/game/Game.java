@@ -21,7 +21,9 @@ public class Game { //nommer l'instance patchwork?
   private ArrayList<Player> listPlayer;//Faire un objet de listplayer permettrait de faciliter les operation sur lui
   private final GlobalPatches globalPatches;
   private final GlobalBoard globalBoard;
-
+  private int theSpecialTile; // Tant que la valeur de cette variable reste a -1 aucun joueur n'a formé la tuile spécial,
+  							  // des que l'un d'entre eux l'a atteint, la variable prend la valeur du numero du joueur en question
+  
   /**
    * Initialisation of a Game
    *
@@ -36,6 +38,7 @@ public class Game { //nommer l'instance patchwork?
     listPlayer.add(new Player(new PlayerBoard(9, 9), player2, 5, 0, false));
     this.globalPatches = new GlobalPatches("stockage_patchs");
     this.globalBoard = new GlobalBoard();
+    theSpecialTile = -1;
   }
 
   /**
@@ -134,8 +137,42 @@ public class Game { //nommer l'instance patchwork?
         default -> System.err.println("L'action n'est pas valide.\n");
       }
     }
+    if(listPlayer.get(joueur).playerBoard().hasBonusPatch()) {
+    	theSpecialTile = joueur;
+    }
     return true;
 
   }
-
+  
+  /**
+   * Method printing the score of the two players
+   */
+  
+  public void scoreAnnouncement() {
+	  int scorePlayer1 = 0, scorePlayer2 = 0;
+	  switch(theSpecialTile) {
+	  	case 0 -> {
+	  		System.out.println("C'est " + listPlayer.get(0).name() + " qui a remporté la tuile !");
+	  		scorePlayer1 += 7;
+	  	}
+	  	case 1 -> {
+	  		System.out.println("C'est " + listPlayer.get(0).name() + " qui a remporté la tuile !");
+  			scorePlayer2 += 7;
+	  	}		
+	  	default -> System.out.println("Personne n'a obtenue la tuile spéciale.");
+	  }
+	  scorePlayer1 += listPlayer.get(0).jetons();
+	  scorePlayer2 += listPlayer.get(1).jetons();
+	  scorePlayer1 -= 2 * listPlayer.get(0).playerBoard().getNbSquare();
+	  scorePlayer2 -= 2 * listPlayer.get(1).playerBoard().getNbSquare();
+	  
+	  if(scorePlayer2 < scorePlayer1) {
+		  System.out.println("C'est " + listPlayer.get(0).name() + " qui remporte la partie !!!");		  
+	  }else if(scorePlayer2 > scorePlayer1) {
+		  System.out.println("C'est " + listPlayer.get(1).name() + " qui remporte la partie !!!");
+	  }else {
+		  System.out.println("Egalité, que des gagnants !!\n\n(Ou que des perdants...)");
+	  }
+  }
 }
+

@@ -19,5 +19,6 @@ public class Main {
       if (!partie.takeAction(partie.idPlayerTurn())) break;
     }
     scan.close();
+    partie.scoreAnnouncement();
   }
 }
