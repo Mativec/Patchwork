@@ -1,14 +1,17 @@
 package lesagervecchio.patchwork.global;
 
 import java.io.IOException;
-
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
+import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import lesagervecchio.patchwork.display.TextualDisplay;
+import lesagervecchio.patchwork.display.DisplayService;
 import lesagervecchio.patchwork.patch.Patch;
 import lesagervecchio.patchwork.patch.Patches;
 import lesagervecchio.patchwork.player.Player;
@@ -27,39 +30,37 @@ public class GlobalPatches {
   private static int nbPatch;
   private ArrayList<Integer> orderPatches;
   private final HashMap<Integer, Patch> patchesById;
+  private final DisplayService displayService;
+  private final Patch specialPatch;
 
   /**
    * Initialization of the class 'GlobalPatches'
    */
-  public GlobalPatches(String deck) {
+  public GlobalPatches(String deck, DisplayService displayService) {
     //On initialise dans le constructeur le positionnement des patchs les uns
     //par rapport aux autres.
     // Ici on ne prend donc que les id (de 0 à nbPatch - 1)
     Objects.requireNonNull(deck, "deck is null");
+    Objects.requireNonNull(displayService, "no display Service Chosen");
+
+    this.displayService = displayService;
+    specialPatch = Patches.binToPatch(List.of("16", "0", "0", "0"), 0, 0, 0);
     patchesById = new HashMap<>();
     var path = Path.of("res/" + deck);
     try (var reader = Files.newBufferedReader(path)) {
       String line;
       String[] numbers;
-      //while((line = reader.readLine()) != null) {
       nbPatch = Integer.parseInt(reader.readLine());
       while ((line = reader.readLine()) != null) {
         numbers = line.split(" ");
 
         patchesById.put(
-          Integer.valueOf(
-            numbers[0]
-          ),
+          Integer.valueOf(numbers[0]),
           Patches.binToPatch(
-            List.of(
-              numbers[5], numbers[6], numbers[7], numbers[8]
-            ), Integer.parseInt(
-              numbers[1]
-            ), Integer.parseInt(
-              numbers[2]
-            ), Integer.parseInt(
-              numbers[3]
-            )
+            List.of(numbers[5], numbers[6], numbers[7], numbers[8]),
+            Integer.parseInt(numbers[1]),
+            Integer.parseInt(numbers[2]),
+            Integer.parseInt(numbers[3])
           )
         );
         //0 -> index, 1 -> coupbutton
@@ -70,7 +71,7 @@ public class GlobalPatches {
       }
     } catch (IOException e) {
       System.err.println(e.getMessage());
-      System.out.println("Non : (");
+      displayService.drawText("Non : (");
       System.exit(1);
       return;
     }
@@ -82,6 +83,14 @@ public class GlobalPatches {
       orderPatches.set(index, orderPatches.get(i));
       orderPatches.set(i, tempo);
     }
+  }
+
+  public ArrayList<Integer> getOrderPatches() {
+    return orderPatches;
+  }
+
+  public HashMap<Integer, Patch> getPatchesById() {
+    return patchesById;
   }
 
   /**
@@ -118,58 +127,20 @@ public class GlobalPatches {
   public Player buyPatch(Player player, int index) {
     // on considere qu'en rentrant dans cette fonction, le nombre de jetons du joueur est valide
     Objects.requireNonNull(player, "player is null");
-    Patch oldPatch = patchesById.get(orderPatches.get(index));
+    Patch oldPatch;
+    if(index != -1) {
+    	oldPatch = patchesById.get(orderPatches.get(index));
+    }else {
+    	oldPatch = specialPatch;
+    }
     player = player.updateJetons(oldPatch.buttonCost());
     player = player.movePlayer(oldPatch.turns());
     //Ensuite, on supprime oldPatch de globalPatches
     patchesById.remove(orderPatches.get(index));
     orderPatches.remove(index);
     //Et on envoie dans le plateau du joueur le vieux patch ici!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    var display = new TextualDisplay();
-    player.playerBoard().patchPlacePhase(display, oldPatch);
+    player.playerBoard().patchPlacePhase(displayService, oldPatch);
     return player;
-  }
-
-  /**
-   * Method that display orderPatches.
-   */
-  public void printOrderPatches() {
-    //affiche les 8 prochains patchs de orderPatches
-    var builder1 = new StringBuilder();
-    var builder2 = new StringBuilder();
-    builder1.append("{");
-    builder2.append("{");
-    for (var i = 0; i < 10; i++) {
-      String bringedButtons = String.valueOf(patchesById.get(orderPatches.get(i)).buttons());
-      String button = String.valueOf(patchesById.get(orderPatches.get(i)).buttonCost());
-      builder1.append(button);
-      builder2.append(bringedButtons);
-      if (button.length() == 1) {
-        builder1.append(" ");
-      }
-      if (bringedButtons.length() == 1) {
-        builder2.append(" ");
-      }
-      builder1.append("|");
-      builder2.append("|  ");
-      String turn = String.valueOf(patchesById.get(orderPatches.get(i)).turns());
-      builder1.append(turn);
-      if (turn.length() == 1) {
-        builder1.append(" ");
-      }
-      if (i < 9) {
-        builder1.append("}{");
-        builder2.append("}{");
-      }
-
-    }
-    builder1.append("}");
-    builder2.append("}");
-    System.out.println("+-----+".repeat(10));
-    System.out.println(builder1);
-    System.out.println("-".repeat(70));
-    System.out.println(builder2);
-    System.out.println("+-----+".repeat(10) + "\n");
   }
 }
 

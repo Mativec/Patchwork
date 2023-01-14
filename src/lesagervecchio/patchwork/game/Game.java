@@ -1,13 +1,13 @@
 package lesagervecchio.patchwork.game;
 
 import lesagervecchio.patchwork.board.PlayerBoard;
+import lesagervecchio.patchwork.display.DisplayService;
 import lesagervecchio.patchwork.global.GlobalBoard;
 import lesagervecchio.patchwork.global.GlobalPatches;
 import lesagervecchio.patchwork.player.Player;
 
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.Scanner;
 
 /**
  * Class about a game and its components
@@ -23,21 +23,27 @@ public class Game { //nommer l'instance patchwork?
   private final GlobalBoard globalBoard;
   private int theSpecialTile; // Tant que la valeur de cette variable reste a -1 aucun joueur n'a formé la tuile spécial,
   							  // des que l'un d'entre eux l'a atteint, la variable prend la valeur du numero du joueur en question
-  
+    private final DisplayService displayService;
+
   /**
    * Initialisation of a Game
    *
-   * @param player1 : the name of the first player
-   * @param player2 : the name of the second player
+   * @param player1        : the name of the first player
+   * @param player2        : the name of the second player
+   * @param displayService : Display Service (Graphical or Textual)
    */
-  public Game(String player1, String player2) {
-    Objects.requireNonNull(player1);
-    Objects.requireNonNull(player2);
+  public Game(String player1, String player2, DisplayService displayService) {
+    Objects.requireNonNull(player1, "player 1 is null");
+    Objects.requireNonNull(player2, "player 2 is null");
+    Objects.requireNonNull(displayService, "No display service chosen");
+
+    this.displayService = displayService;
+    this.globalPatches = new GlobalPatches("stockage_patchs", displayService);
+    this.globalBoard = new GlobalBoard();
     listPlayer = new ArrayList<>();
+
     listPlayer.add(new Player(new PlayerBoard(), player1, 5, 0, true));
     listPlayer.add(new Player(new PlayerBoard(), player2, 5, 0, false));
-    this.globalPatches = new GlobalPatches("stockage_patchs");
-    this.globalBoard = new GlobalBoard();
     theSpecialTile = -1;
   }
 
@@ -95,53 +101,65 @@ public class Game { //nommer l'instance patchwork?
    * @return : return true while the game is still going, return false if else.
    */
   public boolean takeAction(int joueur) {
+    char choix;
+    int index;
+    boolean verif;
+
     if (joueur == -1) {
       return false;
     }
-    //TODO: resoudre ce warning !
-    var verif = false;
+    verif = false;
     while (!verif) {
       //Affichage patchs dans la liste des patchs avec la bonne méthodes.
-      globalPatches.printOrderPatches();
-      globalBoard.printGlobalBoard(listPlayer);
-      System.out.println("C'est à " + listPlayer.get(joueur).name() + " de jouer.\nQue faites vous?\n\n1. Aller à la prochaine case boutton --> b\n\n2. Choisir un des patchs a mettre sur le plateau --> 1 / 2 / 3");
-      Scanner scan = new Scanner(System.in);
-      char choix = scan.nextLine().charAt(0);
+      displayService.drawOrderPatches(globalPatches);
+      displayService.drawGlobalBoard(listPlayer);
+      displayService.drawText(
+        "C'est à " + listPlayer.get(joueur).name() + " de jouer.",
+        "Que faites vous?\n",
+        "1. Aller à la prochaine case boutton --> b",
+        "2. Choisir un des patchs a mettre sur le plateau --> 1 / 2 / 3"
+      );
+      choix = displayService.waitInput();
+      index = -1;
       switch (choix) {//Penser a mettre a jour les onTop a chaque deplacements
-        case 'b' -> {
+        case 'b' -> { // aller a la prochaine case
           verif = !verif;
-          listPlayer.set(joueur, listPlayer.get(joueur).movePlayer(globalBoard.nextCaseButton(listPlayer.get(joueur).position())));//Echange l'instance player d'index joueur par un player mise a jour par movePlayer, incomplet par rapport a la nouvelle valeur du onTop de l'autre joueur (pas dans tous les cas, mais donc a verifier)
+          //listPlayer.set(joueur, listPlayer.get(joueur).movePlayer(globalBoard.nextCaseButton(listPlayer.get(joueur).position())));//Echange l'instance player d'index joueur par un player mise a jour par movePlayer, incomplet par rapport a la nouvelle valeur du onTop de l'autre joueur (pas dans tous les cas, mais donc a verifier)
+          if(joueur == 1)
+        	  listPlayer.set(joueur, listPlayer.get(joueur).movePlayer(listPlayer.get(0).position() + 1));
+          else
+        	  listPlayer.set(joueur, listPlayer.get(joueur).movePlayer(listPlayer.get(1).position() + 1));
           listPlayer = updateListPlayer(joueur);
         }
-        case '1' -> {
+        case '1' -> {// choix du patch 1
           if (globalPatches.checkPricePatch(listPlayer.get(joueur), 1)) {
-            listPlayer.set(joueur, globalPatches.buyPatch(listPlayer.get(joueur), 0));
-            listPlayer = updateListPlayer(joueur);
+            index = 0;
             verif = !verif;
           }
         }
-        case '2' -> {
+        case '2' -> {// choix du patch 2
           if (globalPatches.checkPricePatch(listPlayer.get(joueur), 2)) {
-            listPlayer.set(joueur, globalPatches.buyPatch(listPlayer.get(joueur), 1));
-            listPlayer = updateListPlayer(joueur);
+            index = 1;
             verif = !verif;
           }
         }
-        case '3' -> {
+        case '3' -> {// choix du patch 3
           if (globalPatches.checkPricePatch(listPlayer.get(joueur), 3)) {
-            listPlayer.set(joueur, globalPatches.buyPatch(listPlayer.get(joueur), 2));
-            listPlayer = updateListPlayer(joueur);
+            index = 2;
             verif = !verif;
           }
         }
         default -> System.err.println("L'action n'est pas valide.\n");
       }
+      if (index != -1) {
+        listPlayer.set(joueur, globalPatches.buyPatch(listPlayer.get(joueur), index));
+      }
+      listPlayer = updateListPlayer(joueur);
     }
     if(listPlayer.get(joueur).playerBoard().hasBonusPatch()) {
     	theSpecialTile = joueur;
     }
     return true;
-
   }
   
   /**
@@ -152,14 +170,14 @@ public class Game { //nommer l'instance patchwork?
 	  int scorePlayer1 = 0, scorePlayer2 = 0;
 	  switch(theSpecialTile) {
 	  	case 0 -> {
-	  		System.out.println("C'est " + listPlayer.get(0).name() + " qui a remporté la tuile !");
+	  		displayService.drawText("C'est " + listPlayer.get(0).name() + " qui a remporté la tuile !");
 	  		scorePlayer1 += 7;
 	  	}
 	  	case 1 -> {
-	  		System.out.println("C'est " + listPlayer.get(0).name() + " qui a remporté la tuile !");
+	  		displayService.drawText("C'est " + listPlayer.get(0).name() + " qui a remporté la tuile !");
   			scorePlayer2 += 7;
 	  	}		
-	  	default -> System.out.println("Personne n'a obtenue la tuile spéciale.");
+	  	default -> displayService.drawText("Personne n'a obtenue la tuile spéciale.");
 	  }
 	  scorePlayer1 += listPlayer.get(0).jetons();
 	  scorePlayer2 += listPlayer.get(1).jetons();
@@ -167,12 +185,11 @@ public class Game { //nommer l'instance patchwork?
 	  scorePlayer2 -= 2 * listPlayer.get(1).playerBoard().getNbSquare();
 	  
 	  if(scorePlayer2 < scorePlayer1) {
-		  System.out.println("C'est " + listPlayer.get(0).name() + " qui remporte la partie !!!");		  
+      displayService.drawText("C'est " + listPlayer.get(0).name() + " qui remporte la partie !!!");
 	  }else if(scorePlayer2 > scorePlayer1) {
-		  System.out.println("C'est " + listPlayer.get(1).name() + " qui remporte la partie !!!");
+      displayService.drawText("C'est " + listPlayer.get(1).name() + " qui remporte la partie !!!");
 	  }else {
-		  System.out.println("Egalité, que des gagnants !!\n\n(Ou que des perdants...)");
+      displayService.drawText("Egalité, que des gagnants !!\n\n(Ou que des perdants...)");
 	  }
   }
 }
-

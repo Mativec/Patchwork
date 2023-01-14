@@ -48,8 +48,25 @@ public record Player(PlayerBoard playerBoard, String name, int jetons, int posit
    * @return : the new player
    */
   public Player moveAndUpdate(GlobalPatches globalPatches, GlobalBoard globalBoard, int movement) {
-
-	  return movePlayer(movement);
+	  Player newPlayer = this;
+	  int specialPatches = globalBoard.isMoveSpecialPatchable(this, movement);
+	  int buttons = globalBoard.isMoveButtonable(this, movement);
+	  int changeJetons;
+	  
+	  if(specialPatches != 0) {
+		  for(var i = 0; i < specialPatches; i ++) {
+			  newPlayer = globalPatches.buyPatch(newPlayer, -1);
+		  }
+	  }
+		  
+	  if(buttons != 0) {
+		  for(var i = 0; i < buttons; i ++) {
+			  changeJetons = newPlayer.playerBoard.getNumberBonusButtons();
+			  newPlayer = new Player(newPlayer.playerBoard(), newPlayer.name(), newPlayer.jetons() + changeJetons, newPlayer.position(), newPlayer.onTop());
+		  }
+	  }		  
+	  
+	  return newPlayer.movePlayer(movement);
   }
   
   /**
@@ -59,9 +76,7 @@ public record Player(PlayerBoard playerBoard, String name, int jetons, int posit
    * @return : the new player
    */
   public Player movePlayer(int movement) {
-    int newPosition = Math.min(movement + position, maxSize());
-    
-    return new Player(playerBoard, name, jetons, newPosition, onTop());
+    return new Player(playerBoard, name, jetons, Math.min(movement + position, maxSize()), onTop());
   }
 
   /**
