@@ -8,7 +8,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import lesagervecchio.patchwork.display.TextualDisplay;
+import lesagervecchio.patchwork.display.DisplayService;
 import lesagervecchio.patchwork.patch.Patch;
 import lesagervecchio.patchwork.patch.Patches;
 import lesagervecchio.patchwork.player.Player;
@@ -27,15 +27,19 @@ public class GlobalPatches {
   private static int nbPatch;
   private ArrayList<Integer> orderPatches;
   private final HashMap<Integer, Patch> patchesById;
+  private final DisplayService displayService;
 
   /**
    * Initialization of the class 'GlobalPatches'
    */
-  public GlobalPatches(String deck) {
+  public GlobalPatches(String deck, DisplayService displayService) {
     //On initialise dans le constructeur le positionnement des patchs les uns
     //par rapport aux autres.
     // Ici on ne prend donc que les id (de 0 à nbPatch - 1)
     Objects.requireNonNull(deck, "deck is null");
+    Objects.requireNonNull(displayService, "no display Service Chosen");
+
+    this.displayService = displayService;
     patchesById = new HashMap<>();
     var path = Path.of("res/" + deck);
     try (var reader = Files.newBufferedReader(path)) {
@@ -70,7 +74,7 @@ public class GlobalPatches {
       }
     } catch (IOException e) {
       System.err.println(e.getMessage());
-      System.out.println("Non : (");
+      displayService.drawText("Non : (");
       System.exit(1);
       return;
     }
@@ -82,6 +86,14 @@ public class GlobalPatches {
       orderPatches.set(index, orderPatches.get(i));
       orderPatches.set(i, tempo);
     }
+  }
+
+  public ArrayList<Integer> getOrderPatches() {
+    return orderPatches;
+  }
+
+  public HashMap<Integer, Patch> getPatchesById() {
+    return patchesById;
   }
 
   /**
@@ -125,51 +137,8 @@ public class GlobalPatches {
     patchesById.remove(orderPatches.get(index));
     orderPatches.remove(index);
     //Et on envoie dans le plateau du joueur le vieux patch ici!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    var display = new TextualDisplay();
-    player.playerBoard().patchPlacePhase(display, oldPatch);
+    player.playerBoard().patchPlacePhase(displayService, oldPatch);
     return player;
-  }
-
-  /**
-   * Method that display orderPatches.
-   */
-  public void printOrderPatches() {
-    //affiche les 8 prochains patchs de orderPatches
-    var builder1 = new StringBuilder();
-    var builder2 = new StringBuilder();
-    builder1.append("{");
-    builder2.append("{");
-    for (var i = 0; i < 10; i++) {
-      String bringedButtons = String.valueOf(patchesById.get(orderPatches.get(i)).buttons());
-      String button = String.valueOf(patchesById.get(orderPatches.get(i)).buttonCost());
-      builder1.append(button);
-      builder2.append(bringedButtons);
-      if (button.length() == 1) {
-        builder1.append(" ");
-      }
-      if (bringedButtons.length() == 1) {
-        builder2.append(" ");
-      }
-      builder1.append("|");
-      builder2.append("|  ");
-      String turn = String.valueOf(patchesById.get(orderPatches.get(i)).turns());
-      builder1.append(turn);
-      if (turn.length() == 1) {
-        builder1.append(" ");
-      }
-      if (i < 9) {
-        builder1.append("}{");
-        builder2.append("}{");
-      }
-
-    }
-    builder1.append("}");
-    builder2.append("}");
-    System.out.println("+-----+".repeat(10));
-    System.out.println(builder1);
-    System.out.println("-".repeat(70));
-    System.out.println(builder2);
-    System.out.println("+-----+".repeat(10) + "\n");
   }
 }
 

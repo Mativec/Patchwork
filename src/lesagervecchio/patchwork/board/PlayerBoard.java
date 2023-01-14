@@ -1,5 +1,6 @@
 package lesagervecchio.patchwork.board;
 
+import lesagervecchio.patchwork.display.DisplayService;
 import lesagervecchio.patchwork.display.TextualDisplay;
 import lesagervecchio.patchwork.patch.Patch;
 import lesagervecchio.patchwork.patch.Patches;
@@ -128,37 +129,37 @@ public class PlayerBoard {
    *
    * @param patch : The Patch wanted to be placed on this.
    */
-  public void patchPlacePhase(TextualDisplay display, Patch patch) {
-    List<String> inputList = List.of("p", "l", "r", "n", "w", "e", "s", "c");
+  public void patchPlacePhase(DisplayService display, Patch patch) {
+    List<Character> inputList = List.of('p', 'l', 'r', 'n', 'w', 'e', 's', 'c');
     var input = new Scanner(System.in);
 
     boolean placePhase = true;
     while (placePhase) {
       //System.out.println("Here's your board :");
-      System.out.println("Voici votre plateau :");
+      display.drawText("Voici votre plateau :");
       display.drawPlayerBoard(this);
       //System.out.println("here's the patch you want to place: ");
-      System.out.println("Voici le patch que vous voulez ajouter au plateau :");
+      display.drawText("Voici le patch que vous voulez ajouter au plateau :");
       display.drawPatch(patch);
       //System.out.println("[p] -> place \n[l/r] -> rotate [left/right]\n[n/w/e/s] -> move to the [north/west/east/south]");
-      System.out.println("[p] -> placer \n[l/r] -> tourner [gauche/droite]\n[n/w/e/s] -> déplacer vers le [nord/ouest/est/sud]");
-      String choice;
+      display.drawText("[p] -> placer \n[l/r] -> tourner [gauche/droite]\n[n/w/e/s] -> déplacer vers le [nord/ouest/est/sud]");
+      Character choice;
       do {
-        choice = input.nextLine();
+        choice = display.waitInput();
       } while (inputList.stream().noneMatch(choice::equals));
       switch (choice) {
-        case "p" -> placePhase = !put(patch);
-        case "l" -> patch.left();
-        case "r" -> patch.right();
-        case "n" -> Patches.move(patch, 0, -1);
-        case "w" -> Patches.move(patch, -1, 0);
-        case "e" -> Patches.move(patch, 1, 0);
-        case "s" -> Patches.move(patch, 0, 1);
-        case "c" -> placePhase = false;
+        case 'p' -> placePhase = !put(patch);
+        case 'l' -> patch.left();
+        case 'r' -> patch.right();
+        case 'n' -> Patches.move(patch, 0, -1);
+        case 'w' -> Patches.move(patch, -1, 0);
+        case 'e' -> Patches.move(patch, 1, 0);
+        case 's' -> Patches.move(patch, 0, 1);
+        case 'c' -> placePhase = false;
       }
     }
-    //System.out.println("Here's your board now :");
-    System.out.println("Voici donc votre plateau :");
+    //display.drawText("Here's your board now :");
+    display.drawText("Voici donc votre plateau :");
     display.drawPlayerBoard(this);
   }
 }

@@ -1,13 +1,13 @@
 package lesagervecchio.patchwork.game;
 
 import lesagervecchio.patchwork.board.PlayerBoard;
+import lesagervecchio.patchwork.display.DisplayService;
 import lesagervecchio.patchwork.global.GlobalBoard;
 import lesagervecchio.patchwork.global.GlobalPatches;
 import lesagervecchio.patchwork.player.Player;
 
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.Scanner;
 
 /**
  * Class about a game and its components
@@ -21,21 +21,27 @@ public class Game { //nommer l'instance patchwork?
   private ArrayList<Player> listPlayer;//Faire un objet de listplayer permettrait de faciliter les operation sur lui
   private final GlobalPatches globalPatches;
   private final GlobalBoard globalBoard;
+  private final DisplayService displayService;
 
   /**
    * Initialisation of a Game
    *
-   * @param player1 : the name of the first player
-   * @param player2 : the name of the second player
+   * @param player1        : the name of the first player
+   * @param player2        : the name of the second player
+   * @param displayService : Display Service (Graphical or Textual)
    */
-  public Game(String player1, String player2) {
-    Objects.requireNonNull(player1);
-    Objects.requireNonNull(player2);
+  public Game(String player1, String player2, DisplayService displayService) {
+    Objects.requireNonNull(player1, "player 1 is null");
+    Objects.requireNonNull(player2, "player 2 is null");
+    Objects.requireNonNull(displayService, "No display service chosen");
+
+    this.displayService = displayService;
+    this.globalPatches = new GlobalPatches("stockage_patchs", displayService);
+    this.globalBoard = new GlobalBoard();
     listPlayer = new ArrayList<>();
+
     listPlayer.add(new Player(new PlayerBoard(9, 9), player1, 5, 0, true));
     listPlayer.add(new Player(new PlayerBoard(9, 9), player2, 5, 0, false));
-    this.globalPatches = new GlobalPatches("stockage_patchs");
-    this.globalBoard = new GlobalBoard();
   }
 
   /**
@@ -99,11 +105,15 @@ public class Game { //nommer l'instance patchwork?
     var verif = false;
     while (!verif) {
       //Affichage patchs dans la liste des patchs avec la bonne méthodes.
-      globalPatches.printOrderPatches();
-      globalBoard.printGlobalBoard(listPlayer);
-      System.out.println("C'est à " + listPlayer.get(joueur).name() + " de jouer.\nQue faites vous?\n\n1. Aller à la prochaine case boutton --> b\n\n2. Choisir un des patchs a mettre sur le plateau --> 1 / 2 / 3");
-      Scanner scan = new Scanner(System.in);
-      char choix = scan.nextLine().charAt(0);
+      displayService.drawOrderPatches(globalPatches);
+      displayService.drawGlobalBoard(listPlayer);
+      displayService.drawText(
+        "C'est à "+ listPlayer.get(joueur).name() + " de jouer.",
+        "Que faites vous?\n",
+        "1. Aller à la prochaine case boutton --> b",
+        "2. Choisir un des patchs a mettre sur le plateau --> 1 / 2 / 3"
+      );
+      char choix = displayService.waitInput();
       switch (choix) {//Penser a mettre a jour les onTop a chaque deplacements
         case 'b' -> {
           verif = !verif;
