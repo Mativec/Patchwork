@@ -1,10 +1,13 @@
 package lesagervecchio.patchwork.global;
 
 import java.io.IOException;
-
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
+import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -27,6 +30,7 @@ public class GlobalPatches {
   private static int nbPatch;
   private ArrayList<Integer> orderPatches;
   private final HashMap<Integer, Patch> patchesById;
+  private final Patch specialPatch;
 
   /**
    * Initialization of the class 'GlobalPatches'
@@ -36,6 +40,7 @@ public class GlobalPatches {
     //par rapport aux autres.
     // Ici on ne prend donc que les id (de 0 à nbPatch - 1)
     Objects.requireNonNull(deck, "deck is null");
+    specialPatch = Patches.binToPatch(List.of("16", "0", "0", "0"), 0, 0, 0);
     patchesById = new HashMap<>();
     var path = Path.of("res/" + deck);
     try (var reader = Files.newBufferedReader(path)) {
@@ -118,7 +123,12 @@ public class GlobalPatches {
   public Player buyPatch(Player player, int index) {
     // on considere qu'en rentrant dans cette fonction, le nombre de jetons du joueur est valide
     Objects.requireNonNull(player, "player is null");
-    Patch oldPatch = patchesById.get(orderPatches.get(index));
+    Patch oldPatch;
+    if(index != -1) {
+    	oldPatch = patchesById.get(orderPatches.get(index));
+    }else {
+    	oldPatch = specialPatch;
+    }
     player = player.updateJetons(oldPatch.buttonCost());
     player = player.movePlayer(oldPatch.turns());
     //Ensuite, on supprime oldPatch de globalPatches

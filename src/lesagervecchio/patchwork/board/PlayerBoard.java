@@ -29,6 +29,15 @@ public class PlayerBoard {
   public int getNbSquare() {
     return nbSquare;
   }
+  
+  /**
+   * Get the number of Bonus Buttons contained in all the pacthes of the board
+   * 
+   * @return the number of bonus buttons
+   */
+  public int getNumberBonusButtons() {
+	  return board.stream().map(Patch::buttons).reduce(null, null);
+  }
 
 
   /**

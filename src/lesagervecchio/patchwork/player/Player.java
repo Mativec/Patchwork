@@ -3,6 +3,8 @@ package lesagervecchio.patchwork.player;
 import java.util.Objects;
 
 import lesagervecchio.patchwork.board.PlayerBoard;
+import lesagervecchio.patchwork.global.GlobalBoard;
+import lesagervecchio.patchwork.global.GlobalPatches;
 
 /**
  * Record about a player and his component
@@ -40,6 +42,34 @@ public record Player(PlayerBoard playerBoard, String name, int jetons, int posit
   }
 
   /**
+   * Method using movePlayer and other methods to update the position of the player, but also to update other attributes changed by the move.
+   * 
+   * @param movement : the number of cases that the player cross
+   * @return : the new player
+   */
+  public Player moveAndUpdate(GlobalPatches globalPatches, GlobalBoard globalBoard, int movement) {
+	  Player newPlayer = this;
+	  int specialPatches = globalBoard.isMoveSpecialPatchable(this, movement);
+	  int buttons = globalBoard.isMoveButtonable(this, movement);
+	  int changeJetons;
+	  
+	  if(specialPatches != 0) {
+		  for(var i = 0; i < specialPatches; i ++) {
+			  newPlayer = globalPatches.buyPatch(newPlayer, -1);
+		  }
+	  }
+		  
+	  if(buttons != 0) {
+		  for(var i = 0; i < buttons; i ++) {
+			  changeJetons = newPlayer.playerBoard.getNumberBonusButtons();
+			  newPlayer = new Player(newPlayer.playerBoard(), newPlayer.name(), newPlayer.jetons() + changeJetons, newPlayer.position(), newPlayer.onTop());
+		  }
+	  }		  
+	  
+	  return newPlayer.movePlayer(movement);
+  }
+  
+  /**
    * Method that simulate a move from a player by changing his location.
    *
    * @param movement : the number of cases that the player cross
@@ -47,7 +77,7 @@ public record Player(PlayerBoard playerBoard, String name, int jetons, int posit
    */
   public Player movePlayer(int movement) {
     int newPosition = Math.min(movement + position, maxSize());
-
+    
     return new Player(playerBoard, name, jetons, newPosition, onTop());
   }
 
