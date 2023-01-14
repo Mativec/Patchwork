@@ -8,6 +8,9 @@ import lesagervecchio.patchwork.player.Player;
 import java.util.ArrayList;
 
 public final class GraphicalDisplay implements DisplayService {
+
+  private int x;
+  private int y;
   @Override
   public void drawPatch(Patch patch) {
 
@@ -41,6 +44,12 @@ public final class GraphicalDisplay implements DisplayService {
   @Override
   public char waitInput() {
     return 0;
+  }
+
+  @Override
+  public void moveCursor(int x, int y) {
+    this.x = x;
+    this.y = y;
   }
 
   @Override

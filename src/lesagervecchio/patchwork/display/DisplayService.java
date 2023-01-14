@@ -54,6 +54,8 @@ public sealed interface DisplayService permits TextualDisplay, GraphicalDisplay 
    */
   char waitInput();
 
+  void moveCursor(int x, int y);
+
   /**
    * Close and free the service.
    */

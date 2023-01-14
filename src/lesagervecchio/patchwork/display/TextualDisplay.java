@@ -155,6 +155,9 @@ public final class TextualDisplay implements DisplayService {
   }
 
   @Override
+  public void moveCursor(int x, int y) {}
+
+  @Override
   public void close() {
     scan.close();
   }
