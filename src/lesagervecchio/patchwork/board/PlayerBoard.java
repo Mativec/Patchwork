@@ -5,24 +5,15 @@ import lesagervecchio.patchwork.display.TextualDisplay;
 import lesagervecchio.patchwork.patch.Patch;
 import lesagervecchio.patchwork.patch.Patches;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * @author Mativec (Matias VECCHIO)
  */
 public class PlayerBoard {
-  private final int sizeX;
-  private final int sizeY;
+  private final int SIZE = 9; // 9 x 9
   private final List<Patch> board = new ArrayList<>();
   private int nbSquare = 0;
-
-  public PlayerBoard(int sizeX, int sizeY) {
-    this.sizeX = sizeX;
-    this.sizeY = sizeY;
-  }
 
   /**
    * Get many squares has been placed on board
@@ -57,7 +48,7 @@ public class PlayerBoard {
    */
   public boolean outOfBound(Integer[] newSquare) {
     Objects.requireNonNull(newSquare, "square array is null");
-    return newSquare[0] < 0 || newSquare[0] >= sizeX || newSquare[1] < 0 || newSquare[1] >= sizeY;
+    return newSquare[0] < 0 || newSquare[0] >= SIZE || newSquare[1] < 0 || newSquare[1] >= SIZE;
   }
 
 
@@ -107,29 +98,51 @@ public class PlayerBoard {
    * @return Bool : yes or not
    */
   public boolean hasBonusPatch() {
-    long squares = board
-      .stream()
-      .mapToLong(Patches::size)
-      .sum();
-    return squares >= 49;
+    List<Integer> index = new ArrayList<>();
+    int noHole;
+
+    //enough square to make a 7 x 7 patches ?
+    if (board.stream().mapToInt(Patches::size).sum() >= 49) {
+      // Get all column of the board longer or equal than 7 squares
+      getColumn().entrySet().stream()
+        .filter(entry -> entry.getValue() >= 7).forEach(entry -> index.add(entry.getKey()));
+
+      // Check if there is 7 columns in a row
+      noHole = 1;
+      for (int i = 1; i < index.size() && noHole < 7; i++) {
+        if (index.get(i) != index.get(i - 1) + 1) {
+          noHole = 0;
+        }
+        noHole++;
+      }
+      return noHole >= 7;
+    }
+    return false;
+  }
+
+
+  /**
+   * Return a Map which represent the number of squares by column on the board.
+   *
+   * @return : Map<ColumnNumber, NbSquares>
+   */
+  private Map<Integer, Integer> getColumn() {
+    Map<Integer, Integer> output = new HashMap<>();
+    board.forEach(
+      patch -> patch.squares().forEach(
+        integers -> output.merge(integers[0], 1, Integer::sum)
+      )
+    );
+    return output;
   }
 
   /**
-   * Return X size of this board
+   * Return the size of this board
    *
    * @return int : horizontal size
    */
-  public int getSizeX() {
-    return sizeX;
-  }
-
-  /**
-   * Return Y size of this board
-   *
-   * @return int : vertical size
-   */
-  public int getSizeY() {
-    return sizeY;
+  public int getSIZE() {
+    return SIZE;
   }
 
 

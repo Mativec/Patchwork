@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
  */
 public final class TextualDisplay implements DisplayService {
 
-  private static Scanner scan = new Scanner(System.in);
+  private static final Scanner scan = new Scanner(System.in);
 
   /**
    * Return a String which represent patch's display
@@ -70,11 +70,11 @@ public final class TextualDisplay implements DisplayService {
   public void drawPlayerBoard(PlayerBoard board) {
     Objects.requireNonNull(board, "board is null");
 
-    var line = "-".repeat(board.getSizeX() * 3);
+    var line = "-".repeat(board.getSIZE() * 3);
     System.out.println(line);
     System.out.println(sketchPatch(board.asOne()));
     System.out.println(line);
-    System.out.println("Size : (" + board.getSizeX() + ", " + board.getSizeY() + ")");
+    System.out.println("Size : (" + board.getSIZE() + ", " + board.getSIZE() + ")");
   }
 
   @Override
@@ -155,7 +155,8 @@ public final class TextualDisplay implements DisplayService {
   }
 
   @Override
-  public void moveCursor(int x, int y) {}
+  public void moveCursor(int x, int y) {
+  }
 
   @Override
   public void close() {

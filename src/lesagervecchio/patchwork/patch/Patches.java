@@ -47,7 +47,7 @@ public class Patches {
   /**
    * Return how many squares composed patch
    */
-  public static long size(Patch patch) {
+  public static int size(Patch patch) {
     Objects.requireNonNull(patch, "patch is null");
     return patch.squares().size();
   }

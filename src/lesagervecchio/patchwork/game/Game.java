@@ -21,7 +21,9 @@ public class Game { //nommer l'instance patchwork?
   private ArrayList<Player> listPlayer;//Faire un objet de listplayer permettrait de faciliter les operation sur lui
   private final GlobalPatches globalPatches;
   private final GlobalBoard globalBoard;
-  private final DisplayService displayService;
+  private int theSpecialTile; // Tant que la valeur de cette variable reste a -1 aucun joueur n'a formé la tuile spécial,
+  							  // des que l'un d'entre eux l'a atteint, la variable prend la valeur du numero du joueur en question
+    private final DisplayService displayService;
 
   /**
    * Initialisation of a Game
@@ -40,8 +42,9 @@ public class Game { //nommer l'instance patchwork?
     this.globalBoard = new GlobalBoard();
     listPlayer = new ArrayList<>();
 
-    listPlayer.add(new Player(new PlayerBoard(9, 9), player1, 5, 0, true));
-    listPlayer.add(new Player(new PlayerBoard(9, 9), player2, 5, 0, false));
+    listPlayer.add(new Player(new PlayerBoard(), player1, 5, 0, true));
+    listPlayer.add(new Player(new PlayerBoard(), player2, 5, 0, false));
+    theSpecialTile = -1;
   }
 
   /**
@@ -153,6 +156,40 @@ public class Game { //nommer l'instance patchwork?
       }
       listPlayer = updateListPlayer(joueur);
     }
+    if(listPlayer.get(joueur).playerBoard().hasBonusPatch()) {
+    	theSpecialTile = joueur;
+    }
     return true;
+  }
+  
+  /**
+   * Method printing the score of the two players
+   */
+  
+  public void scoreAnnouncement() {
+	  int scorePlayer1 = 0, scorePlayer2 = 0;
+	  switch(theSpecialTile) {
+	  	case 0 -> {
+	  		displayService.drawText("C'est " + listPlayer.get(0).name() + " qui a remporté la tuile !");
+	  		scorePlayer1 += 7;
+	  	}
+	  	case 1 -> {
+	  		displayService.drawText("C'est " + listPlayer.get(0).name() + " qui a remporté la tuile !");
+  			scorePlayer2 += 7;
+	  	}		
+	  	default -> displayService.drawText("Personne n'a obtenue la tuile spéciale.");
+	  }
+	  scorePlayer1 += listPlayer.get(0).jetons();
+	  scorePlayer2 += listPlayer.get(1).jetons();
+	  scorePlayer1 -= 2 * listPlayer.get(0).playerBoard().getNbSquare();
+	  scorePlayer2 -= 2 * listPlayer.get(1).playerBoard().getNbSquare();
+	  
+	  if(scorePlayer2 < scorePlayer1) {
+      displayService.drawText("C'est " + listPlayer.get(0).name() + " qui remporte la partie !!!");
+	  }else if(scorePlayer2 > scorePlayer1) {
+      displayService.drawText("C'est " + listPlayer.get(1).name() + " qui remporte la partie !!!");
+	  }else {
+      displayService.drawText("Egalité, que des gagnants !!\n\n(Ou que des perdants...)");
+	  }
   }
 }

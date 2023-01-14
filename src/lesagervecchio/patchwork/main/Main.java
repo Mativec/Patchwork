@@ -39,6 +39,7 @@ public class Main {
     while (true) {
       if (!partie.takeAction(partie.idPlayerTurn())) break;
     }
+    partie.scoreAnnouncement();
     displayService.close();
   }
 }

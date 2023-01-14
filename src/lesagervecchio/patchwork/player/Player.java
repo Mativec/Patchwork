@@ -96,4 +96,5 @@ public record Player(PlayerBoard playerBoard, String name, int jetons, int posit
   private static int maxSize() {
     return 52;
   }
+  
 }
