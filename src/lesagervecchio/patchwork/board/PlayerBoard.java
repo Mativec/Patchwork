@@ -88,29 +88,38 @@ public class PlayerBoard {
    * @return Bool : yes or not
    */
   public boolean hasBonusPatch() {
-    long squares = board
+    int squares = board
       .stream()
-      .mapToLong(Patches::size)
+      .mapToInt(Patches::size)
       .sum();
-    return squares >= 49;
+    if(squares >= 49){
+      var truc = getValues();
+      System.out.println("Plateau : ");
+      System.out.println(truc);
+      long truc2 = truc.values().stream().filter(value -> value >= 7).count();
+      System.out.println(truc2);
+      return truc2 >= 7;
+    }
+    return false;
+  }
+
+  private Map<Integer, Integer> getValues() {
+    Map<Integer, Integer> output = new HashMap<>();
+    board.forEach(
+        patch -> patch.squares().forEach(
+          integers -> output.merge(integers[0], 1, Integer::sum)
+        )
+    );
+    return output;
   }
 
   /**
-   * Return X size of this board
+   * Return the size of this board
    *
    * @return int : horizontal size
    */
-  public int getSizeX() {
-    return sizeX;
-  }
-
-  /**
-   * Return Y size of this board
-   *
-   * @return int : vertical size
-   */
-  public int getSizeY() {
-    return sizeY;
+  public int getSIZE() {
+    return SIZE;
   }
 
 
@@ -152,4 +161,22 @@ public class PlayerBoard {
     System.out.println("Voici donc votre plateau :");
     display.drawPlayerBoard(this);
   }
+
+  public static void main(String[] args) {
+    var board = new PlayerBoard();
+    for(int i = 0; i < 7; i++){
+      board.put(new Patch(List.of(
+        new Integer[]{0, i},
+        new Integer[]{1, i},
+        new Integer[]{2, i},
+        new Integer[]{3, i},
+        new Integer[]{4, i},
+        new Integer[]{5, i},
+        new Integer[]{7, i}
+      ), 0, 0, 0));
+    }
+    new TextualDisplay().drawPlayerBoard(board);
+    System.out.println(board.hasBonusPatch());
+  }
+
 }
