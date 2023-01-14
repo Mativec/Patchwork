@@ -88,27 +88,40 @@ public class PlayerBoard {
    * @return Bool : yes or not
    */
   public boolean hasBonusPatch() {
-    int squares = board
-      .stream()
-      .mapToInt(Patches::size)
-      .sum();
-    if(squares >= 49){
-      var truc = getValues();
-      System.out.println("Plateau : ");
-      System.out.println(truc);
-      long truc2 = truc.values().stream().filter(value -> value >= 7).count();
-      System.out.println(truc2);
-      return truc2 >= 7;
+    List<Integer> index = new ArrayList<>();
+    int noHole;
+
+    //enough square to make a 7 x 7 patches ?
+    if (board.stream().mapToInt(Patches::size).sum() >= 49) {
+      // Get all column of the board longer or equal than 7 squares
+      getColumn().entrySet().stream()
+        .filter(entry -> entry.getValue() >= 7).forEach(entry -> index.add(entry.getKey()));
+
+      // Check if there is 7 columns in a row
+      noHole = 1;
+      for (int i = 1; i < index.size() && noHole < 7; i++) {
+        if (index.get(i) != index.get(i - 1) + 1) {
+          noHole = 0;
+        }
+        noHole++;
+      }
+      return noHole >= 7;
     }
     return false;
   }
 
-  private Map<Integer, Integer> getValues() {
+
+  /**
+   * Return a Map which represent the number of squares by column on the board.
+   *
+   * @return : Map<ColumnNumber, NbSquares>
+   */
+  private Map<Integer, Integer> getColumn() {
     Map<Integer, Integer> output = new HashMap<>();
     board.forEach(
-        patch -> patch.squares().forEach(
-          integers -> output.merge(integers[0], 1, Integer::sum)
-        )
+      patch -> patch.squares().forEach(
+        integers -> output.merge(integers[0], 1, Integer::sum)
+      )
     );
     return output;
   }
@@ -161,22 +174,4 @@ public class PlayerBoard {
     System.out.println("Voici donc votre plateau :");
     display.drawPlayerBoard(this);
   }
-
-  public static void main(String[] args) {
-    var board = new PlayerBoard();
-    for(int i = 0; i < 7; i++){
-      board.put(new Patch(List.of(
-        new Integer[]{0, i},
-        new Integer[]{1, i},
-        new Integer[]{2, i},
-        new Integer[]{3, i},
-        new Integer[]{4, i},
-        new Integer[]{5, i},
-        new Integer[]{7, i}
-      ), 0, 0, 0));
-    }
-    new TextualDisplay().drawPlayerBoard(board);
-    System.out.println(board.hasBonusPatch());
-  }
-
 }
