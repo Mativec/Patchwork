@@ -34,8 +34,8 @@ public class Game { //nommer l'instance patchwork?
     Objects.requireNonNull(player1);
     Objects.requireNonNull(player2);
     listPlayer = new ArrayList<>();
-    listPlayer.add(new Player(new PlayerBoard(9, 9), player1, 5, 0, true));
-    listPlayer.add(new Player(new PlayerBoard(9, 9), player2, 5, 0, false));
+    listPlayer.add(new Player(new PlayerBoard(), player1, 5, 0, true));
+    listPlayer.add(new Player(new PlayerBoard(), player2, 5, 0, false));
     this.globalPatches = new GlobalPatches("stockage_patchs");
     this.globalBoard = new GlobalBoard();
     theSpecialTile = -1;
