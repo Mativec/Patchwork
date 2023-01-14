@@ -4,24 +4,15 @@ import lesagervecchio.patchwork.display.TextualDisplay;
 import lesagervecchio.patchwork.patch.Patch;
 import lesagervecchio.patchwork.patch.Patches;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * @author Mativec (Matias VECCHIO)
  */
 public class PlayerBoard {
-  private final int sizeX;
-  private final int sizeY;
+  private final int SIZE = 9; // 9 x 9
   private final List<Patch> board = new ArrayList<>();
   private int nbSquare = 0;
-
-  public PlayerBoard(int sizeX, int sizeY) {
-    this.sizeX = sizeX;
-    this.sizeY = sizeY;
-  }
 
   /**
    * Get many squares has been placed on board
@@ -47,7 +38,7 @@ public class PlayerBoard {
    */
   public boolean outOfBound(Integer[] newSquare) {
     Objects.requireNonNull(newSquare, "square array is null");
-    return newSquare[0] < 0 || newSquare[0] >= sizeX || newSquare[1] < 0 || newSquare[1] >= sizeY;
+    return newSquare[0] < 0 || newSquare[0] >= SIZE || newSquare[1] < 0 || newSquare[1] >= SIZE;
   }
 
 
