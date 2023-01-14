@@ -42,7 +42,6 @@ public class GlobalBoard {
    */
   public int isMoveButtonable(Player player, int move) {
     //Renvoie true si avec ce move le joueur va passer un boutton, false sinon
-
     //stream retournant le premier boutton du plateau depassant la pos du joueur. Vaut -1 sinon.
     return (int) buttons.stream().filter(u -> u > player.position()).count();
   }
@@ -56,25 +55,6 @@ public class GlobalBoard {
    */
   public int isMoveSpecialPatchable(Player player, int move) {
 	  return (int) sPatches.stream().filter(u -> u > player.position()).count();
-  }
-
-  /**
-   * Method that display the board game
-   *
-   * @param players : a list of all the players in the game
-   */
-  public void printGlobalBoard(ArrayList<Player> players) {
-    var builder = new StringBuilder();
-    builder.append("0|");
-    if (players.get(0).position() <= players.get(1).position()) {
-      builder.append("J1->").append(players.get(0).position());
-      builder.append("|J2->").append(players.get(1).position());
-    } else {
-      builder.append("J2->").append(players.get(1).position());
-      builder.append("|J1->").append(players.get(0).position());
-    }
-    builder.append("|53\n");
-    System.out.println(builder);
   }
 
   /**

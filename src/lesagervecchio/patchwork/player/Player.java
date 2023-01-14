@@ -76,9 +76,7 @@ public record Player(PlayerBoard playerBoard, String name, int jetons, int posit
    * @return : the new player
    */
   public Player movePlayer(int movement) {
-    int newPosition = Math.min(movement + position, maxSize());
-    
-    return new Player(playerBoard, name, jetons, newPosition, onTop());
+    return new Player(playerBoard, name, jetons, Math.min(movement + position, maxSize()), onTop());
   }
 
   /**
