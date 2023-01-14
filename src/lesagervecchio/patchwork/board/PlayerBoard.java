@@ -131,19 +131,19 @@ public class PlayerBoard {
    */
   public void patchPlacePhase(DisplayService display, Patch patch) {
     List<Character> inputList = List.of('p', 'l', 'r', 'n', 'w', 'e', 's', 'c');
-    var input = new Scanner(System.in);
+    Character choice;
 
     boolean placePhase = true;
     while (placePhase) {
-      //System.out.println("Here's your board :");
       display.drawText("Voici votre plateau :");
       display.drawPlayerBoard(this);
-      //System.out.println("here's the patch you want to place: ");
       display.drawText("Voici le patch que vous voulez ajouter au plateau :");
       display.drawPatch(patch);
-      //System.out.println("[p] -> place \n[l/r] -> rotate [left/right]\n[n/w/e/s] -> move to the [north/west/east/south]");
-      display.drawText("[p] -> placer \n[l/r] -> tourner [gauche/droite]\n[n/w/e/s] -> déplacer vers le [nord/ouest/est/sud]");
-      Character choice;
+      display.drawText(
+        "[p] -> placer",
+        "[l/r] -> tourner [gauche/droite]",
+        "[n/w/e/s] -> déplacer vers le [nord/ouest/est/sud]"
+      );
       do {
         choice = display.waitInput();
       } while (inputList.stream().noneMatch(choice::equals));
@@ -158,7 +158,6 @@ public class PlayerBoard {
         case 'c' -> placePhase = false;
       }
     }
-    //display.drawText("Here's your board now :");
     display.drawText("Voici donc votre plateau :");
     display.drawPlayerBoard(this);
   }

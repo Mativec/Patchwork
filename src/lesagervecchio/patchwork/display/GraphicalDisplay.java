@@ -7,7 +7,7 @@ import lesagervecchio.patchwork.player.Player;
 
 import java.util.ArrayList;
 
-public final class GraphicalDisplay implements DisplayService{
+public final class GraphicalDisplay implements DisplayService {
   @Override
   public void drawPatch(Patch patch) {
 
@@ -29,7 +29,7 @@ public final class GraphicalDisplay implements DisplayService{
   }
 
   @Override
-  public void drawText(Object... objects) {
+  public void drawText(String... text) {
 
   }
 

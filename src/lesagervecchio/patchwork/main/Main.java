@@ -14,7 +14,6 @@ public class Main {
     display.drawText("Saisissez le nom du Joueur2.");
     String player2 = display.waitText();
 
-
     //Début du jeu
     var partie = new Game(player1, player2, display);
     while (true) {

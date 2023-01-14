@@ -139,9 +139,9 @@ public final class TextualDisplay implements DisplayService {
   }
 
   @Override
-  public void drawText(Object... objects) {
-    Objects.requireNonNull(objects, "arg null");
-    Arrays.stream(objects).forEach(System.out::println);
+  public void drawText(String... text) {
+    Objects.requireNonNull(text, "arg null");
+    Arrays.stream(text).forEach(System.out::println);
   }
 
   @Override

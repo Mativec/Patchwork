@@ -38,11 +38,24 @@ public sealed interface DisplayService permits TextualDisplay, GraphicalDisplay 
    */
   void drawOrderPatches(GlobalPatches globalPatches);
 
-  void drawText(Object... objects);
+  void drawText(String... text);
 
+  /**
+   * Wait for a text to be entered by the player
+   *
+   * @return
+   */
   String waitText();
 
+  /**
+   * Wait for an input to be pressed
+   *
+   * @return : input pressed as a char.
+   */
   char waitInput();
 
+  /**
+   * Close and free the service.
+   */
   void close();
 }

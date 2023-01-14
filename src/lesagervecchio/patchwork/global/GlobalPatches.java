@@ -45,25 +45,17 @@ public class GlobalPatches {
     try (var reader = Files.newBufferedReader(path)) {
       String line;
       String[] numbers;
-      //while((line = reader.readLine()) != null) {
       nbPatch = Integer.parseInt(reader.readLine());
       while ((line = reader.readLine()) != null) {
         numbers = line.split(" ");
 
         patchesById.put(
-          Integer.valueOf(
-            numbers[0]
-          ),
+          Integer.valueOf(numbers[0]),
           Patches.binToPatch(
-            List.of(
-              numbers[5], numbers[6], numbers[7], numbers[8]
-            ), Integer.parseInt(
-              numbers[1]
-            ), Integer.parseInt(
-              numbers[2]
-            ), Integer.parseInt(
-              numbers[3]
-            )
+            List.of(numbers[5], numbers[6], numbers[7], numbers[8]),
+            Integer.parseInt(numbers[1]),
+            Integer.parseInt(numbers[2]),
+            Integer.parseInt(numbers[3])
           )
         );
         //0 -> index, 1 -> coupbutton

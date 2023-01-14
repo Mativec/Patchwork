@@ -40,7 +40,6 @@ public class GlobalBoard {
    */
   public boolean isMoveButtonable(Player player, int move) {
     //Renvoie true si avec ce move le joueur va passer un boutton, false sinon
-
     //stream retournant le premier boutton du plateau depassant la pos du joueur. Vaut -1 sinon.
     int postButton = buttons.stream().filter(u -> u > player.position()).findFirst().orElse(-1);
     if (postButton == -1) {
