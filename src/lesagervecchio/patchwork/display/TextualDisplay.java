@@ -42,7 +42,7 @@ public final class TextualDisplay implements DisplayService {
    *
    * @param patch : Patch we want to show on screen.
    */
-  public void drawPatch(Patch patch, float tailleCase) {
+  public void drawPatch(Patch patch) {
     Objects.requireNonNull(patch, "patch is null");
     System.out.print(sketchPatch(patch).replaceAll("\\.", " "));
     System.out.println(patch);

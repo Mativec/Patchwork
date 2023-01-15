@@ -160,10 +160,13 @@ public class PlayerBoard {
 
     boolean placePhase = true;
     while (placePhase) {
+      display.moveCursor(50, 100);
       display.drawText("Voici votre plateau :");
       display.drawPlayerBoard(this);
-      display.drawText("Voici le patch que vous voulez ajouter au plateau :");
-      display.drawPatch(patch, 1);
+      display.moveCursor(50, 300);
+      display.drawText("Voici le patch que vous voulez\n ajouter au plateau :");
+      display.moveCursor(50, 400);
+      display.drawPatch(patch);
       display.drawText(
         "[p] -> placer",
         "[l/r] -> tourner [gauche/droite]",
@@ -185,5 +188,6 @@ public class PlayerBoard {
     }
     display.drawText("Voici donc votre plateau :");
     display.drawPlayerBoard(this);
+    display.drawPatch(patch);
   }
 }
