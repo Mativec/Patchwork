@@ -14,6 +14,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Random;
 
 public final class GraphicalDisplay implements DisplayService {
   private ApplicationContext context; // The window
@@ -29,32 +30,61 @@ public final class GraphicalDisplay implements DisplayService {
   }
 
   @Override
-  public void drawPatch(Patch patch) {
-	  
+  public void drawPatch(Patch patch, float tailleCase) {
+    context.renderFrame(graphics2D -> {
+      Random random = new Random();
+      Color couleur = new Color(random.nextInt(256), random.nextInt(256), random.nextInt(256));
+      for (var coord : patch.squares()) {
+        drawSquare(couleur, graphics2D,
+          x + coord[0] * tailleCase,
+          y + coord[1] * tailleCase,
+          tailleCase, 5);
+      }
+    });
+  }
+
+  public void drawGrille(Graphics2D graphics2D, int nbCases, float tailleCase) {
+    for (var i = 0; i < 9; i++) {
+      for (var z = 0; z < 9; z++) {
+        drawSquare(Color.BLACK, graphics2D, x + i * tailleCase, y + z * tailleCase, tailleCase, 3);
+      }
+    }
   }
 
   @Override
+  /**
+   * Method that draw the playerBoard of the current player.
+   * @param board : the board of the current player
+   */
   public void drawPlayerBoard(PlayerBoard board) {
-	  ScreenInfo screen = context.getScreenInfo();
-	  float hauteurEcart, largeurEcart, largeurPlateau;
-	  hauteurEcart = screen.getHeight() / 10;
-	  largeurPlateau = screen.getHeight() - hauteurEcart * 2;
-	  largeurEcart = (screen.getWidth() - largeurPlateau) / 2;
-	  moveCursor(largeurEcart, hauteurEcart);
-	  context.renderFrame(graphics2D -> {
-		  drawSquare(Color.BLACK, graphics2D, largeurEcart, hauteurEcart, largeurPlateau, 5);
-	  });	  
+    ScreenInfo screen = context.getScreenInfo();
+    float hauteurEcart, largeurEcart, largeurPlateau;
+    hauteurEcart = screen.getHeight() / 10;
+    largeurPlateau = screen.getHeight() - hauteurEcart * 2;
+    largeurEcart = (screen.getWidth() - largeurPlateau) / 2;
+    moveCursor(largeurEcart, hauteurEcart);
+    context.renderFrame(graphics2D -> {
+      drawSquare(Color.BLACK, graphics2D, largeurEcart, hauteurEcart, largeurPlateau, 5);
+      // var patch = Patches.binToPatch(List.of("16", "16", "0", "0"), 0, 0, 0);
+      for (var playerPatch : board.getBoard()) {
+        moveCursor(largeurEcart, hauteurEcart);
+        drawGrille(graphics2D, 9, largeurPlateau / 9);
+        moveCursor(largeurEcart, hauteurEcart);
+        drawPatch(playerPatch, largeurPlateau / 9);
+      }
+    });
   }
 
   /**
    * Draw a square on the board
+   *
    * @param graphics2D : frame where the square is drawn.
-   * @param x : horizontal coordinate which the square is drawn.
-   * @param y : vertical coordinate which the square is drawn.
-   * @param c : size of a side of the square.
-   * @param w : width of a side of the square.
+   * @param x          : horizontal coordinate which the square is drawn.
+   * @param y          : vertical coordinate which the square is drawn.
+   * @param c          : size of a side of the square.
+   * @param w          : width of a side of the square.
    */
-  void drawSquare(Color color, Graphics2D graphics2D, float x, float y, float c, float w){
+  void drawSquare(Color color, Graphics2D graphics2D, float x, float y, float c, float w) {
     graphics2D.setColor(color);
     graphics2D.fill(new Rectangle2D.Float(x, y, c, c));
     graphics2D.setColor(backgroundColor);
@@ -74,22 +104,22 @@ public final class GraphicalDisplay implements DisplayService {
     context.renderFrame(graphics2D -> {
       float offset = sizeSquareSide;
       for (int i = 1; i <= GlobalBoard.size(); i++) {
-        int position = i-1;
+        int position = i - 1;
         float squareX = x - widthSquareSide;
         float squareY = y - sizeSquareSide + widthSquareSide;
         Color color = getGlobalBoardColor(position, players);
         drawSquare(color, graphics2D, squareX, squareY, sizeSquareSide, widthSquareSide);
-        if(color == Color.BLACK && GlobalBoard.getButtons().stream().anyMatch(integer -> integer.equals(position))){
+        if (color == Color.BLACK && GlobalBoard.getButtons().stream().anyMatch(integer -> integer.equals(position))) {
           drawSquare(Color.CYAN, graphics2D, squareX, squareY, sizeSquareSide, widthSquareSide / 2);
         }
-        if(GlobalBoard.getSpecialPatches().stream().anyMatch(integer -> integer.equals(position))){
+        if (GlobalBoard.getSpecialPatches().stream().anyMatch(integer -> integer.equals(position))) {
           drawSquare(Color.LIGHT_GRAY, graphics2D, squareX, squareY, sizeSquareSide, widthSquareSide / 2);
         }
         drawText(String.valueOf(i));
-        if(i % 9 == 0){
+        if (i % 9 == 0) {
           offset *= -1;
           y += sizeSquareSide;
-        }else {
+        } else {
           x += offset;
         }
       }
@@ -127,7 +157,7 @@ public final class GraphicalDisplay implements DisplayService {
     )
     ;
   }
-  
+
   private Color getGlobalBoardColor(int position, ArrayList<Player> players) {
     if (players.stream().allMatch(player -> player.position() == position)) {
       return Color.PINK;
@@ -166,6 +196,7 @@ public final class GraphicalDisplay implements DisplayService {
 
   /**
    * Draw one line of text
+   *
    * @param line : an argument of drawText(String ... text)
    */
   private void drawText(String line) {
@@ -194,6 +225,7 @@ public final class GraphicalDisplay implements DisplayService {
 
   /**
    * Check if key is a valid input
+   *
    * @param key : the input
    * @return : valid or not
    */
@@ -218,11 +250,12 @@ public final class GraphicalDisplay implements DisplayService {
 
   /**
    * Extract a char representing the input.
+   *
    * @param key : the input to translate
    * @return : a char
    */
   private char getInput(KeyboardKey key) {
-    return switch(key){
+    return switch (key) {
       case UNDEFINED -> 0;
       case UP -> 'n';
       case LEFT -> 'w';
