@@ -9,8 +9,9 @@ public class Main {
   public static void main(String[] args) {
     //Gestion des arguments
     DisplayService displayService;
-    String message;
-    int fontSize = 25;
+    String message, nameDeck;
+    char input;
+    float fontSize = 25;
     float x = 50;
     float y = 50;
 
@@ -29,7 +30,7 @@ public class Main {
       System.out.println("\t-c pour un affichage textuel sur la console.");
       return;
     }
-    displayService.setupText("SansSerif", fontSize);
+    displayService.setupText("SansSerif", (int)fontSize);
     message = "Saisissez le nom du Joueur1.";
     displayService.moveCursor(x, y);
     y += fontSize;
@@ -48,8 +49,23 @@ public class Main {
     displayService.moveCursor(55 + message.length() * (fontSize/2), y);
     String player2 = displayService.waitText();
 
+    displayService.moveCursor(50, y += (fontSize * 2));
+    displayService.drawText(
+      "Quel deck voulez-vous utilisez ?",
+      "s -> simple",
+      "c -> complet"
+    );
+    do {
+      input = displayService.waitInput();
+    }while(input != 's' && input != 'c');
+    nameDeck = switch (input){
+      case 's' -> "deckSimple";
+      case 'c' -> "deckComplet";
+      default -> throw new IllegalStateException("Unexpected value: " + input);
+    };
+
     //Début du jeu
-    var partie = new Game(player1, player2, displayService);
+    var partie = new Game(player1, player2, displayService, nameDeck);
     while (true) {
       if (!partie.takeAction(partie.idPlayerTurn())) break;
     }
