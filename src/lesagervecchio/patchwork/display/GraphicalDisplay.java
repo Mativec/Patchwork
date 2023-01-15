@@ -1,9 +1,6 @@
 package lesagervecchio.patchwork.display;
 
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics2D;
 import fr.umlv.zen5.Event;
 import fr.umlv.zen5.*;
 import lesagervecchio.patchwork.board.PlayerBoard;
@@ -12,22 +9,11 @@ import lesagervecchio.patchwork.global.GlobalPatches;
 import lesagervecchio.patchwork.patch.Patch;
 import lesagervecchio.patchwork.player.Player;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Objects;
-
-import fr.umlv.zen5.Application;
-import fr.umlv.zen5.ApplicationContext;
-import fr.umlv.zen5.Event;
-import fr.umlv.zen5.KeyboardKey;
-import fr.umlv.zen5.ScreenInfo;
-import lesagervecchio.patchwork.board.PlayerBoard;
-import lesagervecchio.patchwork.global.GlobalPatches;
-import lesagervecchio.patchwork.patch.Patch;
-import lesagervecchio.patchwork.player.Player;
 
 public final class GraphicalDisplay implements DisplayService {
   private ApplicationContext context; // The window
@@ -63,8 +49,8 @@ public final class GraphicalDisplay implements DisplayService {
   /**
    * Draw a square on the board
    * @param graphics2D : frame where the square is drawn.
-   * @param x : horizontal coordinate which the squ&are is drawn.
-   * @param y : vertical coordinate which the squ&are is drawn.
+   * @param x : horizontal coordinate which the square is drawn.
+   * @param y : vertical coordinate which the square is drawn.
    * @param c : size of a side of the square.
    * @param w : width of a side of the square.
    */
@@ -77,28 +63,71 @@ public final class GraphicalDisplay implements DisplayService {
 
   @Override
   public void drawGlobalBoard(ArrayList<Player> players) {
-    // TODO: 01/15/2023 Check if everything is fine after merge
     ScreenInfo screen = context.getScreenInfo();
-    moveCursor(screen.getWidth() / 4, screen.getHeight() / 4);
+    float sizeSquareSide = 50;
+    float widthSquareSide = 5;
     float baseX = x;
     float baseY = y;
+    moveCursor(screen.getWidth() / 10, screen.getHeight() / 4);
+    drawText("Plateau de jeu : ");
+    y += sizeSquareSide;
     context.renderFrame(graphics2D -> {
-      float offset = 50;
-      for (int i = 0; i <= GlobalBoard.size(); i++) {
-        Color color = getGlobalBoardColor(i, players);
-        x += offset;
-        drawSquare(color, graphics2D, x, y, 50, 5);
-        if(i != 0 && i % 9 == 0){
+      float offset = sizeSquareSide;
+      for (int i = 1; i <= GlobalBoard.size(); i++) {
+        int position = i-1;
+        float squareX = x - widthSquareSide;
+        float squareY = y - sizeSquareSide + widthSquareSide;
+        Color color = getGlobalBoardColor(position, players);
+        drawSquare(color, graphics2D, squareX, squareY, sizeSquareSide, widthSquareSide);
+        if(color == Color.BLACK && GlobalBoard.getButtons().stream().anyMatch(integer -> integer.equals(position))){
+          drawSquare(Color.CYAN, graphics2D, squareX, squareY, sizeSquareSide, widthSquareSide / 2);
+        }
+        if(GlobalBoard.getSpecialPatches().stream().anyMatch(integer -> integer.equals(position))){
+          drawSquare(Color.LIGHT_GRAY, graphics2D, squareX, squareY, sizeSquareSide, widthSquareSide / 2);
+        }
+        drawText(String.valueOf(i));
+        if(i % 9 == 0){
           offset *= -1;
+          y += sizeSquareSide;
+        }else {
           x += offset;
-          y += 50;
         }
       }
     });
+    drawGlobalBoardDescr(players);
     x = baseX;
     y = baseY;
   }
 
+  private void drawGlobalBoardDescr(ArrayList<Player> players) {
+    ScreenInfo screen = context.getScreenInfo();
+    int offset = 25;
+    x = 10;
+    float baseY = y;
+    context.renderFrame(graphics2D -> {
+      drawSquare(Color.PINK, graphics2D, x, y, offset, offset);
+      y += offset;
+      drawSquare(Color.BLUE, graphics2D, x, y, offset, offset);
+      y += offset;
+      drawSquare(Color.RED, graphics2D, x, y, offset, offset);
+      y += offset;
+      drawSquare(Color.CYAN, graphics2D, x, y, offset, offset);
+      y += offset;
+      drawSquare(Color.LIGHT_GRAY, graphics2D, x, y, offset, offset);
+      y += offset;
+    });
+    x += offset;
+    y = baseY + offset;
+    drawText(
+      "Les deux joueurs",
+      players.get(0).name(),
+      players.get(1).name(),
+      "+1 bouton en passant cette case",
+      "+1  special Patch en passant cette case"
+    )
+    ;
+  }
+  
   private Color getGlobalBoardColor(int position, ArrayList<Player> players) {
     if (players.stream().allMatch(player -> player.position() == position)) {
       return Color.PINK;
@@ -187,6 +216,11 @@ public final class GraphicalDisplay implements DisplayService {
     return getInput(event.getKey());
   }
 
+  /**
+   * Extract a char representing the input.
+   * @param key : the input to translate
+   * @return : a char
+   */
   private char getInput(KeyboardKey key) {
     return switch(key){
       case UNDEFINED -> 0;
