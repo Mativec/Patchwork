@@ -101,7 +101,7 @@ public final class GraphicalDisplay implements DisplayService {
       return false;
     }
     return switch (key) {
-      case ALT, ALT_GR, CTRL, UP, LEFT, RIGHT, DOWN, META, SPACE, SHIFT -> false;
+      case ALT, ALT_GR, CTRL, META, SPACE, SHIFT -> false;
       default -> true;
     };
   }
@@ -112,11 +112,18 @@ public final class GraphicalDisplay implements DisplayService {
     do {
       event = context.pollOrWaitEvent(Integer.MAX_VALUE);
     } while (event.getAction() != Event.Action.KEY_RELEASED || !validKey(event.getKey()));
-    if (event.getKey() == KeyboardKey.UNDEFINED) {
-      return 0;
-    } else {
-      return event.getKey().name().toLowerCase(Locale.ROOT).charAt(0);
-    }
+    return getInput(event.getKey());
+  }
+
+  private char getInput(KeyboardKey key) {
+    return switch(key){
+      case UNDEFINED -> 0;
+      case UP -> 'n';
+      case LEFT -> 'w';
+      case RIGHT -> 'e';
+      case DOWN -> 's';
+      default -> key.name().toLowerCase(Locale.ROOT).charAt(0);
+    };
   }
 
   @Override
