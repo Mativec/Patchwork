@@ -143,18 +143,21 @@ public class Game { //nommer l'instance patchwork?
         }
         case '1' -> {// choix du patch 1
           if (globalPatches.checkPricePatch(listPlayer.get(joueur), 1)) {
+        	displayService.clearWindow();
             index = 0;
             verif = !verif;
           }
         }
         case '2' -> {// choix du patch 2
           if (globalPatches.checkPricePatch(listPlayer.get(joueur), 2)) {
+          	displayService.clearWindow();
             index = 1;
             verif = !verif;
           }
         }
         case '3' -> {// choix du patch 3
           if (globalPatches.checkPricePatch(listPlayer.get(joueur), 3)) {
+          	displayService.clearWindow();
             index = 2;
             verif = !verif;
           }
