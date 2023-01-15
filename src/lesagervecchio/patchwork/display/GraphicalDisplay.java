@@ -1,7 +1,7 @@
 package lesagervecchio.patchwork.display;
 
-import fr.umlv.zen5.*;
 import fr.umlv.zen5.Event;
+import fr.umlv.zen5.*;
 import lesagervecchio.patchwork.board.PlayerBoard;
 import lesagervecchio.patchwork.global.GlobalPatches;
 import lesagervecchio.patchwork.patch.Patch;
@@ -15,7 +15,7 @@ import java.util.Objects;
 
 public final class GraphicalDisplay implements DisplayService {
   private ApplicationContext context; // The window
-  private Color backgroundColor = Color.WHITE; // Background color of the screen
+  private final Color backgroundColor = Color.WHITE; // Background color of the screen
   private Font font; // The font used by drawText
   private float x; // Horizontal coordinate of the cursor
   private float y; // Vertical coordinate of the cursor
@@ -36,9 +36,29 @@ public final class GraphicalDisplay implements DisplayService {
 
   }
 
+  /**
+   * Draw a square on the board
+   * @param graphics2D : frame where the square is drawn.
+   * @param x : horizontal coordinate which the squ&are is drawn.
+   * @param y : vertical coordinate which the squ&are is drawn.
+   * @param c : size of a side of the square.
+   * @param w : width of a side of the square.
+   */
+  void drawSquare(Graphics2D graphics2D, float x, float y, float c, float w){
+    graphics2D.setColor(Color.BLACK);
+    graphics2D.fill(new Rectangle2D.Float(x, y, c, c));
+    graphics2D.setColor(backgroundColor);
+    graphics2D.fill(new Rectangle2D.Float(x + w, y + w, c - 2 * w, c - 2 * w));
+  }
+
   @Override
   public void drawGlobalBoard(ArrayList<Player> players) {
-
+    context.renderFrame(graphics2D -> {
+      drawSquare(graphics2D, 50, 50, 500, 5);
+      drawSquare(graphics2D, 100, 100, 50, 1);
+    });
+    context.pollOrWaitEvent(50000000);
+    System.exit(0);
   }
 
   @Override
@@ -57,7 +77,7 @@ public final class GraphicalDisplay implements DisplayService {
     float baseY = y;
     for (String line : text) {
       y += offset;
-      offset = 20;
+      offset = font.getSize();
       drawText(line);
     }
     y = baseY;
@@ -111,7 +131,7 @@ public final class GraphicalDisplay implements DisplayService {
     Event event;
     do {
       event = context.pollOrWaitEvent(Integer.MAX_VALUE);
-    } while (event.getAction() != Event.Action.KEY_RELEASED || !validKey(event.getKey()));
+    } while (Objects.isNull(event) || event.getAction() != Event.Action.KEY_RELEASED || !validKey(event.getKey()));
     return getInput(event.getKey());
   }
 

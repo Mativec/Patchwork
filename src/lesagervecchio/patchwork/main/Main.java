@@ -34,13 +34,13 @@ public class Main {
     displayService.setupText("SansSerif", fontSize);
     message = "Saisissez le nom du Joueur1.";
     displayService.moveCursor(x, y);
-    y += 20;
+    y += fontSize;
     displayService.drawText(
       "Le joueur1 commencera la partie.",
       message
     );
     displayService.moveCursor(x + message.length() * (fontSize/2), y);
-    y += 20;
+    y += fontSize;
     String player1 = displayService.waitText();
 
     message = "Saisissez le nom du Joueur2.";
@@ -49,8 +49,6 @@ public class Main {
 
     displayService.moveCursor(55 + message.length() * (fontSize/2), y);
     String player2 = displayService.waitText();
-
-    displayService.clearWindow();
 
     //Début du jeu
     var partie = new Game(player1, player2, displayService);
