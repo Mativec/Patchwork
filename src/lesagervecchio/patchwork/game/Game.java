@@ -124,7 +124,7 @@ public class Game { //nommer l'instance patchwork?
         "C'est à " + listPlayer.get(joueur).name() + " de jouer.",
         "Que faites vous?\n",
         "1. Aller à la prochaine case bouton --> b",
-        "2. Choisir un des patchs a mettre sur le plateau --> 1 / 2 / 3",
+        "2. Choisir un des patchs a mettre sur le plateau --> a / z / e",
         "3. Voir l'ensemble des patches --> q"
       );
 
@@ -147,20 +147,23 @@ public class Game { //nommer l'instance patchwork?
           displayService.drawOrderPatches(globalPatches);
           displayService.waitInput();
         }
-        case '1' -> {// choix du patch 1
+        case 'a' -> {// choix du patch 1
           if (globalPatches.checkPricePatch(listPlayer.get(joueur), 1)) {
+        	displayService.clearWindow();
             index = 0;
             verif = !verif;
           }
         }
-        case '2' -> {// choix du patch 2
+        case 'z' -> {// choix du patch 2
           if (globalPatches.checkPricePatch(listPlayer.get(joueur), 2)) {
+          	displayService.clearWindow();
             index = 1;
             verif = !verif;
           }
         }
-        case '3' -> {// choix du patch 3
+        case 'e' -> {// choix du patch 3
           if (globalPatches.checkPricePatch(listPlayer.get(joueur), 3)) {
+          	displayService.clearWindow();
             index = 2;
             verif = !verif;
           }

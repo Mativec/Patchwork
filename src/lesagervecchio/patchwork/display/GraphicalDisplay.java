@@ -2,6 +2,7 @@ package lesagervecchio.patchwork.display;
 
 
 import fr.umlv.zen5.Event;
+
 import fr.umlv.zen5.*;
 import lesagervecchio.patchwork.board.PlayerBoard;
 import lesagervecchio.patchwork.global.GlobalBoard;
@@ -29,20 +30,36 @@ public final class GraphicalDisplay implements DisplayService {
     Application.run(backgroundColor, applicationContext -> context = applicationContext);
   }
 
+  /**
+   * Method that draw a Patch depending on the value of x and y;
+   *
+   * @param patch : the patch to be drawn
+   */
   @Override
-  public void drawPatch(Patch patch, float tailleCase) {
+  public void drawPatch(Patch patch) {
+    float hauteurEcart, largeurEcart, largeurPlateau;
+    ScreenInfo screen = context.getScreenInfo();
+    hauteurEcart = screen.getHeight() / 10;
+    largeurPlateau = screen.getHeight() - hauteurEcart * 2;
+    largeurEcart = (screen.getWidth() - largeurPlateau) / 2;
+    moveCursor(largeurEcart, hauteurEcart);
     context.renderFrame(graphics2D -> {
       Random random = new Random();
       Color couleur = new Color(random.nextInt(256), random.nextInt(256), random.nextInt(256));
       for (var coord : patch.squares()) {
         drawSquare(couleur, graphics2D,
-          x + coord[0] * tailleCase,
-          y + coord[1] * tailleCase,
-          tailleCase, 5);
+          x + coord[0] * (largeurPlateau / 9),
+          y + coord[1] * (largeurPlateau / 9),
+          (largeurPlateau / 9), 5);
       }
     });
   }
 
+  /*
+   * Method that display the grid for the personal board of a player
+   *
+   * @param tailleCase : the width of a case
+   */
   public void drawGrille(Graphics2D graphics2D, float tailleCase) {
     for (var i = 0; i < 9; i++) {
       for (var z = 0; z < 9; z++) {
@@ -58,6 +75,7 @@ public final class GraphicalDisplay implements DisplayService {
    */
   @Override
   public void drawPlayerBoard(PlayerBoard board) {
+    clearWindow();
     ScreenInfo screen = context.getScreenInfo();
     float hauteurEcart, largeurEcart, largeurPlateau;
     hauteurEcart = screen.getHeight() / 10;
@@ -66,12 +84,12 @@ public final class GraphicalDisplay implements DisplayService {
     moveCursor(largeurEcart, hauteurEcart);
     context.renderFrame(graphics2D -> {
       drawSquare(Color.BLACK, graphics2D, largeurEcart, hauteurEcart, largeurPlateau, 5);
+      moveCursor(largeurEcart, hauteurEcart);
+      drawGrille(graphics2D, largeurPlateau / 9);
       // var patch = Patches.binToPatch(List.of("16", "16", "0", "0"), 0, 0, 0);
       for (var playerPatch : board.getBoard()) {
         moveCursor(largeurEcart, hauteurEcart);
-        drawGrille(graphics2D, largeurPlateau / 9);
-        moveCursor(largeurEcart, hauteurEcart);
-        drawPatch(playerPatch, largeurPlateau / 9);
+        drawPatch(playerPatch);
       }
     });
   }
@@ -94,6 +112,7 @@ public final class GraphicalDisplay implements DisplayService {
 
   @Override
   public void drawGlobalBoard(ArrayList<Player> players) {
+    // TODO: 01/15/2023 all squares are drawn one on another
     ScreenInfo screen = context.getScreenInfo();
     float sizeSquareSide = 50;
     float widthSquareSide = 5;
@@ -189,7 +208,7 @@ public final class GraphicalDisplay implements DisplayService {
     drawText("Liste des patches présents dans le deck :");
     y += font.getSize();
     globalPatches.getPatchesById().values().forEach(patch -> {
-      drawPatch(patch, offset);
+      drawPatch(patch);
       x += spaceBetweenPatch;
       if (x >= screen.getWidth() / 2) {
         x = tmpX;
