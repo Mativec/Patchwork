@@ -53,6 +53,14 @@ public final class GraphicalDisplay implements DisplayService {
   }
 
 
+  public void drawGrille(Graphics2D graphics2D, int nbCases, float tailleCase) {
+	  for(var i = 0; i < 9; i ++) {
+		  for(var z = 0; z < 9; z ++) {
+			  drawSquare(Color.BLACK, graphics2D, x + i * tailleCase, y + z * tailleCase, tailleCase, 3);
+		  }
+	  }
+  }
+  
   @Override
   /**
    * Method that draw the playerBoard of the current player.
@@ -67,10 +75,13 @@ public final class GraphicalDisplay implements DisplayService {
 	  moveCursor(largeurEcart, hauteurEcart);
 	  context.renderFrame(graphics2D -> {
 		  drawSquare(Color.BLACK, graphics2D, largeurEcart, hauteurEcart, largeurPlateau, 5);
-		  var patch = Patches.binToPatch(List.of("16", "16", "0", "0"), 0, 0, 0);
-		  //for(var playerPatch : board)
-		  moveCursor(largeurEcart, hauteurEcart);
-		  drawGraphicalPatch(patch, graphics2D, largeurPlateau / 9);
+		  // var patch = Patches.binToPatch(List.of("16", "16", "0", "0"), 0, 0, 0);
+		  for(var playerPatch : board.getBoard()) {
+			moveCursor(largeurEcart, hauteurEcart);
+		  	drawGrille(graphics2D, 9, largeurPlateau / 9);
+		  	moveCursor(largeurEcart, hauteurEcart);
+		  	drawGraphicalPatch(playerPatch, graphics2D, largeurPlateau / 9);
+		  }
 	  });	  
   }
 

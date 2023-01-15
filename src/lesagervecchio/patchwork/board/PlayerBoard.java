@@ -22,6 +22,10 @@ public class PlayerBoard {
     return nbSquare;
   }
   
+  public List<Patch> getBoard(){
+	  return board;
+  }
+  
   /**
    * Get the number of Bonus Buttons contained in all the pacthes of the board
    * 
@@ -30,7 +34,6 @@ public class PlayerBoard {
   public int getNumberBonusButtons() {
 	  return board.stream().map(Patch::buttons).reduce(null, null);
   }
-
 
   /**
    * Check if we're trying to overwrite a patch on Board
