@@ -32,13 +32,14 @@ public class Game { //nommer l'instance patchwork?
    * @param player2        : the name of the second player
    * @param displayService : Display Service (Graphical or Textual)
    */
-  public Game(String player1, String player2, DisplayService displayService) {
+  public Game(String player1, String player2, DisplayService displayService, String nameDeck) {
     Objects.requireNonNull(player1, "player 1 is null");
     Objects.requireNonNull(player2, "player 2 is null");
     Objects.requireNonNull(displayService, "No display service chosen");
+    Objects.requireNonNull(nameDeck, "name");
 
     this.displayService = displayService;
-    this.globalPatches = new GlobalPatches("stockage_patchs", displayService);
+    this.globalPatches = new GlobalPatches(nameDeck, displayService);
     this.globalBoard = new GlobalBoard();
     listPlayer = new ArrayList<>();
 
