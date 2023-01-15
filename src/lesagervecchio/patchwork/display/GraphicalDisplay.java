@@ -307,8 +307,6 @@ public final class GraphicalDisplay implements DisplayService {
     ScreenInfo screenInfo = context.getScreenInfo();
     context.renderFrame(graphics2D -> {
       graphics2D.setColor(backgroundColor);
-      System.out.println(screenInfo.getWidth());
-      System.out.println(screenInfo.getHeight());
       graphics2D.fill(new Rectangle2D.Float(0, 0, screenInfo.getWidth(), screenInfo.getHeight()));
     });
   }
