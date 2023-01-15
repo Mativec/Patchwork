@@ -1,6 +1,7 @@
 package lesagervecchio.patchwork.display;
 
 import lesagervecchio.patchwork.board.PlayerBoard;
+import lesagervecchio.patchwork.global.GlobalBoard;
 import lesagervecchio.patchwork.global.GlobalPatches;
 import lesagervecchio.patchwork.patch.Patch;
 import lesagervecchio.patchwork.player.Player;
@@ -88,7 +89,9 @@ public final class TextualDisplay implements DisplayService {
       builder.append("J2->").append(players.get(1).position());
       builder.append("|J1->").append(players.get(0).position());
     }
-    builder.append("|53\n");
+    builder.append("|").append(GlobalBoard.size()).append("\n");
+    builder.append("Cases avec des boutons : ").append(GlobalBoard.getButtons()).append("\n");
+    builder.append("Cases avec des morceaux de cuir : ").append(GlobalBoard.getSpecialPatches()).append("\n");
     System.out.println(builder);
   }
 
