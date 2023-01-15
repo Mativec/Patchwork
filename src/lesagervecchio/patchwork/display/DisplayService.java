@@ -38,6 +38,17 @@ public sealed interface DisplayService permits TextualDisplay, GraphicalDisplay 
    */
   void drawOrderPatches(GlobalPatches globalPatches);
 
+  /**
+   * Set up the font for text draw, needed by drawTest and waitText
+   * @param FontName : Name of the font
+   * @param fontSize : Size of the font
+   */
+  default void setupText(String FontName, int fontSize){}
+
+  /**
+   * Draw the text in parameter where the cursor is, one parameter per line.
+   * @param text : The text to draw.
+   */
   void drawText(String... text);
 
   /**
@@ -54,10 +65,21 @@ public sealed interface DisplayService permits TextualDisplay, GraphicalDisplay 
    */
   char waitInput();
 
-  void moveCursor(int x, int y);
+  /**
+   * Move the cursor for the next to operate at a precise point of the screen
+   * (0, 0) based on corner N-W
+   * @param x : horizontal coordinate wanted for the cursor
+   * @param y : vertical coordinate wanted for the cursor
+   */
+  default void moveCursor(float x, float y){}
 
   /**
-   * Close and free the service.
+   * Clear the window
+   */
+  default void clearWindow(){}
+
+  /**
+   * Close the service.
    */
   void close();
 }
