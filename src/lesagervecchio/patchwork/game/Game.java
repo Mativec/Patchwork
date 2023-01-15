@@ -1,5 +1,6 @@
 package lesagervecchio.patchwork.game;
 
+import fr.umlv.zen5.ScreenInfo;
 import lesagervecchio.patchwork.board.PlayerBoard;
 import lesagervecchio.patchwork.display.DisplayService;
 import lesagervecchio.patchwork.global.GlobalBoard;
@@ -119,9 +120,6 @@ public class Game { //nommer l'instance patchwork?
       displayService.drawOrderPatches(globalPatches);
       displayService.drawGlobalBoard(listPlayer);
       //displayService.moveCursor(50, 1000);
-      displayService.drawPlayerBoard(listPlayer.get(joueur).playerBoard());
-      choix = displayService.waitInput();
-      displayService.clearWindow();
       displayService.moveCursor(10, 20);
       displayService.drawText(
         "C'est à " + listPlayer.get(joueur).name() + " de jouer.",
@@ -134,7 +132,9 @@ public class Game { //nommer l'instance patchwork?
       switch (choix) {//Penser a mettre a jour les onTop a chaque deplacements
         case 'b' -> { // aller a la prochaine case
         	verif = !verif;
-        	//listPlayer.set(joueur, listPlayer.get(joueur).movePlayer(globalBoard.nextCaseButton(listPlayer.get(joueur).position())));//Echange l'instance player d'index joueur par un player mise a jour par movePlayer, incomplet par rapport a la nouvelle valeur du onTop de l'autre joueur (pas dans tous les cas, mais donc a verifier)
+        	//listPlayer.set(joueur, listPlayer.get(joueur).movePlayer(globalBoard.nextCaseButton(listPlayer.get(joueur).position())));
+          // Echange l'instance player d'index joueur par un player mise a jour par movePlayer,
+          // incomplet par rapport a la nouvelle valeur du onTop de l'autre joueur (pas dans tous les cas, mais donc a verifier)
         	if(joueur == 1)
         		listPlayer.set(joueur, listPlayer.get(joueur).moveAndUpdate(globalPatches, globalBoard, (listPlayer.get(0).position() - listPlayer.get(1).position()) + 1));
         	else
@@ -179,7 +179,7 @@ public class Game { //nommer l'instance patchwork?
   public void scoreAnnouncement() {
 	  int scorePlayer1 = 0, scorePlayer2 = 0;
     displayService.clearWindow();
-    displayService.moveCursor(10, 100);
+    displayService.moveCursor(-1, -1);
 	  switch(theSpecialTile) {
 	  	case 0 -> {
 	  		displayService.drawText("C'est " + listPlayer.get(0).name() + " qui a remporté la tuile !");
@@ -203,7 +203,7 @@ public class Game { //nommer l'instance patchwork?
 	  }else if(scorePlayer2 > scorePlayer1) {
       displayService.drawText("C'est " + listPlayer.get(1).name() + " qui remporte la partie !!!");
 	  }else {
-      displayService.drawText("Egalité, que des gagnants !!\n\n(Ou que des perdants...)");
+      displayService.drawText("Égalité, que des gagnants !!\n\n(Ou que des perdants...)");
 	  }
     displayService.waitInput();
   }
