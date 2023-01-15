@@ -1,6 +1,5 @@
 package lesagervecchio.patchwork.game;
 
-import fr.umlv.zen5.ScreenInfo;
 import lesagervecchio.patchwork.board.PlayerBoard;
 import lesagervecchio.patchwork.display.DisplayService;
 import lesagervecchio.patchwork.global.GlobalBoard;
@@ -116,30 +115,36 @@ public class Game { //nommer l'instance patchwork?
       displayService.clearWindow();
 
       //Affichage patchs dans la liste des patchs avec la bonne méthodes.
-
-      displayService.drawOrderPatches(globalPatches);
       displayService.drawGlobalBoard(listPlayer);
+
       //displayService.moveCursor(50, 1000);
       displayService.moveCursor(10, 20);
       displayService.drawText(
         "C'est à " + listPlayer.get(joueur).name() + " de jouer.",
         "Que faites vous?\n",
         "1. Aller à la prochaine case bouton --> b",
-        "2. Choisir un des patchs a mettre sur le plateau --> 1 / 2 / 3"
+        "2. Choisir un des patchs a mettre sur le plateau --> 1 / 2 / 3",
+        "3. Voir l'ensemble des patches --> q"
       );
+
       choix = displayService.waitInput();
       index = -1;
       switch (choix) {//Penser a mettre a jour les onTop a chaque deplacements
         case 'b' -> { // aller a la prochaine case
-        	verif = !verif;
-        	//listPlayer.set(joueur, listPlayer.get(joueur).movePlayer(globalBoard.nextCaseButton(listPlayer.get(joueur).position())));
+          verif = !verif;
+          //listPlayer.set(joueur, listPlayer.get(joueur).movePlayer(globalBoard.nextCaseButton(listPlayer.get(joueur).position())));
           // Echange l'instance player d'index joueur par un player mise a jour par movePlayer,
           // incomplet par rapport a la nouvelle valeur du onTop de l'autre joueur (pas dans tous les cas, mais donc a verifier)
-        	if(joueur == 1)
-        		listPlayer.set(joueur, listPlayer.get(joueur).moveAndUpdate(globalPatches, globalBoard, (listPlayer.get(0).position() - listPlayer.get(1).position()) + 1));
-        	else
-        		listPlayer.set(joueur, listPlayer.get(joueur).moveAndUpdate(globalPatches, globalBoard,(listPlayer.get(1).position() - listPlayer.get(0).position()) + 1));
-        	listPlayer = updateListPlayer(joueur);
+          if (joueur == 1)
+            listPlayer.set(joueur, listPlayer.get(joueur).moveAndUpdate(globalPatches, globalBoard, (listPlayer.get(0).position() - listPlayer.get(1).position()) + 1));
+          else
+            listPlayer.set(joueur, listPlayer.get(joueur).moveAndUpdate(globalPatches, globalBoard, (listPlayer.get(1).position() - listPlayer.get(0).position()) + 1));
+          listPlayer = updateListPlayer(joueur);
+        }
+        case 'q' -> {
+          displayService.clearWindow();
+          displayService.drawOrderPatches(globalPatches);
+          displayService.waitInput();
         }
         case '1' -> {// choix du patch 1
           if (globalPatches.checkPricePatch(listPlayer.get(joueur), 1)) {
@@ -166,45 +171,44 @@ public class Game { //nommer l'instance patchwork?
       }
       listPlayer = updateListPlayer(joueur);
     }
-    if(listPlayer.get(joueur).playerBoard().hasBonusPatch()) {
-    	theSpecialTile = joueur;
+    if (listPlayer.get(joueur).playerBoard().hasBonusPatch()) {
+      theSpecialTile = joueur;
     }
     return true;
   }
-  
+
   /**
    * Method printing the score of the two players
    */
-  
   public void scoreAnnouncement() {
-	  int scorePlayer1 = 0, scorePlayer2 = 0;
+    int scorePlayer1 = 0, scorePlayer2 = 0;
     displayService.clearWindow();
     displayService.moveCursor(-1, -1);
-	  switch(theSpecialTile) {
-	  	case 0 -> {
-	  		displayService.drawText("C'est " + listPlayer.get(0).name() + " qui a remporté la tuile !");
-	  		scorePlayer1 += 7;
-	  	}
-	  	case 1 -> {
-	  		displayService.drawText("C'est " + listPlayer.get(0).name() + " qui a remporté la tuile !");
-  			scorePlayer2 += 7;
-	  	}		
-	  	default -> displayService.drawText("Personne n'a obtenue la tuile spéciale.");
-	  }
+    switch (theSpecialTile) {
+      case 0 -> {
+        displayService.drawText("C'est " + listPlayer.get(0).name() + " qui a remporté la tuile !");
+        scorePlayer1 += 7;
+      }
+      case 1 -> {
+        displayService.drawText("C'est " + listPlayer.get(0).name() + " qui a remporté la tuile !");
+        scorePlayer2 += 7;
+      }
+      default -> displayService.drawText("Personne n'a obtenue la tuile spéciale.");
+    }
 
     displayService.moveCursor(10, 130);
-	  scorePlayer1 += listPlayer.get(0).jetons();
-	  scorePlayer2 += listPlayer.get(1).jetons();
-	  scorePlayer1 -= 2 * listPlayer.get(0).playerBoard().getNbSquare();
-	  scorePlayer2 -= 2 * listPlayer.get(1).playerBoard().getNbSquare();
-	  
-	  if(scorePlayer2 < scorePlayer1) {
+    scorePlayer1 += listPlayer.get(0).jetons();
+    scorePlayer2 += listPlayer.get(1).jetons();
+    scorePlayer1 -= 2 * listPlayer.get(0).playerBoard().getNbSquare();
+    scorePlayer2 -= 2 * listPlayer.get(1).playerBoard().getNbSquare();
+
+    if (scorePlayer2 < scorePlayer1) {
       displayService.drawText("C'est " + listPlayer.get(0).name() + " qui remporte la partie !!!");
-	  }else if(scorePlayer2 > scorePlayer1) {
+    } else if (scorePlayer2 > scorePlayer1) {
       displayService.drawText("C'est " + listPlayer.get(1).name() + " qui remporte la partie !!!");
-	  }else {
+    } else {
       displayService.drawText("Égalité, que des gagnants !!\n\n(Ou que des perdants...)");
-	  }
+    }
     displayService.waitInput();
   }
 }
