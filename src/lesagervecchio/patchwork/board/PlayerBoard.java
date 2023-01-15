@@ -1,33 +1,29 @@
 package lesagervecchio.patchwork.board;
 
-import lesagervecchio.patchwork.display.TextualDisplay;
+import lesagervecchio.patchwork.display.DisplayService;
+
 import lesagervecchio.patchwork.patch.Patch;
 import lesagervecchio.patchwork.patch.Patches;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * @author Mativec (Matias VECCHIO)
  */
 public class PlayerBoard {
-  private final int sizeX;
-  private final int sizeY;
+  private final int SIZE = 9; // 9 x 9
   private final List<Patch> board = new ArrayList<>();
   private int nbSquare = 0;
-
-  public PlayerBoard(int sizeX, int sizeY) {
-    this.sizeX = sizeX;
-    this.sizeY = sizeY;
-  }
 
   /**
    * Get many squares has been placed on board
    */
   public int getNbSquare() {
     return nbSquare;
+  }
+  
+  public List<Patch> getBoard(){
+	  return board;
   }
   
   /**
@@ -38,7 +34,6 @@ public class PlayerBoard {
   public int getNumberBonusButtons() {
 	  return board.stream().map(Patch::buttons).reduce(null, null);
   }
-
 
   /**
    * Check if we're trying to overwrite a patch on Board
@@ -56,7 +51,7 @@ public class PlayerBoard {
    */
   public boolean outOfBound(Integer[] newSquare) {
     Objects.requireNonNull(newSquare, "square array is null");
-    return newSquare[0] < 0 || newSquare[0] >= sizeX || newSquare[1] < 0 || newSquare[1] >= sizeY;
+    return newSquare[0] < 0 || newSquare[0] >= SIZE || newSquare[1] < 0 || newSquare[1] >= SIZE;
   }
 
 
@@ -106,29 +101,51 @@ public class PlayerBoard {
    * @return Bool : yes or not
    */
   public boolean hasBonusPatch() {
-    long squares = board
-      .stream()
-      .mapToLong(Patches::size)
-      .sum();
-    return squares >= 49;
+    List<Integer> index = new ArrayList<>();
+    int noHole;
+
+    //enough square to make a 7 x 7 patches ?
+    if (board.stream().mapToInt(Patches::size).sum() >= 49) {
+      // Get all column of the board longer or equal than 7 squares
+      getColumn().entrySet().stream()
+        .filter(entry -> entry.getValue() >= 7).forEach(entry -> index.add(entry.getKey()));
+
+      // Check if there is 7 columns in a row
+      noHole = 1;
+      for (int i = 1; i < index.size() && noHole < 7; i++) {
+        if (index.get(i) != index.get(i - 1) + 1) {
+          noHole = 0;
+        }
+        noHole++;
+      }
+      return noHole >= 7;
+    }
+    return false;
+  }
+
+
+  /**
+   * Return a Map which represent the number of squares by column on the board.
+   *
+   * @return : Map<ColumnNumber, NbSquares>
+   */
+  private Map<Integer, Integer> getColumn() {
+    Map<Integer, Integer> output = new HashMap<>();
+    board.forEach(
+      patch -> patch.squares().forEach(
+        integers -> output.merge(integers[0], 1, Integer::sum)
+      )
+    );
+    return output;
   }
 
   /**
-   * Return X size of this board
+   * Return the size of this board
    *
    * @return int : horizontal size
    */
-  public int getSizeX() {
-    return sizeX;
-  }
-
-  /**
-   * Return Y size of this board
-   *
-   * @return int : vertical size
-   */
-  public int getSizeY() {
-    return sizeY;
+  public int getSIZE() {
+    return SIZE;
   }
 
 
@@ -137,37 +154,40 @@ public class PlayerBoard {
    *
    * @param patch : The Patch wanted to be placed on this.
    */
-  public void patchPlacePhase(TextualDisplay display, Patch patch) {
-    List<String> inputList = List.of("p", "l", "r", "n", "w", "e", "s", "c");
-    var input = new Scanner(System.in);
+  public void patchPlacePhase(DisplayService display, Patch patch) {
+    List<Character> inputList = List.of('p', 'l', 'r', 'n', 'w', 'e', 's', 'c');
+    Character choice;
 
     boolean placePhase = true;
     while (placePhase) {
-      //System.out.println("Here's your board :");
-      System.out.println("Voici votre plateau :");
+      display.moveCursor(50, 100);
+      display.drawText("Voici votre plateau :");
       display.drawPlayerBoard(this);
-      //System.out.println("here's the patch you want to place: ");
-      System.out.println("Voici le patch que vous voulez ajouter au plateau :");
+      display.moveCursor(50, 300);
+      display.drawText("Voici le patch que vous voulez\n ajouter au plateau :");
+      display.moveCursor(50, 400);
       display.drawPatch(patch);
-      //System.out.println("[p] -> place \n[l/r] -> rotate [left/right]\n[n/w/e/s] -> move to the [north/west/east/south]");
-      System.out.println("[p] -> placer \n[l/r] -> tourner [gauche/droite]\n[n/w/e/s] -> déplacer vers le [nord/ouest/est/sud]");
-      String choice;
+      display.drawText(
+        "[p] -> placer",
+        "[l/r] -> tourner [gauche/droite]",
+        "[n/w/e/s] -> déplacer vers le [nord/ouest/est/sud]"
+      );
       do {
-        choice = input.nextLine();
+        choice = display.waitInput();
       } while (inputList.stream().noneMatch(choice::equals));
       switch (choice) {
-        case "p" -> placePhase = !put(patch);
-        case "l" -> patch.left();
-        case "r" -> patch.right();
-        case "n" -> Patches.move(patch, 0, -1);
-        case "w" -> Patches.move(patch, -1, 0);
-        case "e" -> Patches.move(patch, 1, 0);
-        case "s" -> Patches.move(patch, 0, 1);
-        case "c" -> placePhase = false;
+        case 'p' -> placePhase = !put(patch);
+        case 'l' -> patch.left();
+        case 'r' -> patch.right();
+        case 'n' -> Patches.move(patch, 0, -1);
+        case 'w' -> Patches.move(patch, -1, 0);
+        case 'e' -> Patches.move(patch, 1, 0);
+        case 's' -> Patches.move(patch, 0, 1);
+        case 'c' -> placePhase = false;
       }
     }
-    //System.out.println("Here's your board now :");
-    System.out.println("Voici donc votre plateau :");
+    display.drawText("Voici donc votre plateau :");
     display.drawPlayerBoard(this);
+    display.drawPatch(patch);
   }
 }

@@ -47,12 +47,9 @@ public class Patches {
   /**
    * Return how many squares composed patch
    */
-  public static long size(Patch patch) {
+  public static int size(Patch patch) {
     Objects.requireNonNull(patch, "patch is null");
-    return patch
-      .squares()
-      .size()
-      ;
+    return patch.squares().size();
   }
 
 
@@ -66,9 +63,9 @@ public class Patches {
    * @return the patch that will be created.
    */
   public static Patch binToPatch(List<String> listBin, int buttons, int turns, int bringedButtons) {
-    //Méthode tradusant un code binaire a 20 bits en un List<Integer[]>, represantant donc un patch
-    var list = new ArrayList<Integer[]>();
+    //Méthode traduisant un code binaire a 20 bits en un List<Integer[]>, represantant donc un patch
     int y = 0;
+    var list = new ArrayList<Integer[]>();
     for (var bits : listBin) {
       String bin = Integer.toBinaryString(Integer.parseInt(bits));
       bin = String.format("%5s", bin).replaceAll(" ", "0");

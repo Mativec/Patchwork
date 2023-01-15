@@ -34,11 +34,10 @@ public record Player(PlayerBoard playerBoard, String name, int jetons, int posit
     if (jetons < 0) {
       throw new IllegalArgumentException("jetons < 0");
     }
-    if (position < 0 || position > maxSize()) {
-      throw new IllegalArgumentException("position < 0 or > " + maxSize());
+    if (position < 0 || position > GlobalBoard.size()) {
+      throw new IllegalArgumentException("position < 0 or > " + GlobalBoard.size());
     }
     Objects.requireNonNull(playerBoard);
-    //var board = new Board();
   }
 
   /**
@@ -62,7 +61,9 @@ public record Player(PlayerBoard playerBoard, String name, int jetons, int posit
 	  if(buttons != 0) {
 		  for(var i = 0; i < buttons; i ++) {
 			  changeJetons = newPlayer.playerBoard.getNumberBonusButtons();
-			  newPlayer = new Player(newPlayer.playerBoard(), newPlayer.name(), newPlayer.jetons() + changeJetons, newPlayer.position(), newPlayer.onTop());
+			  newPlayer = new Player(newPlayer.playerBoard(), newPlayer.name(),
+          newPlayer.jetons() + changeJetons, newPlayer.position(), newPlayer.onTop()
+        );
 		  }
 	  }		  
 	  
@@ -76,9 +77,7 @@ public record Player(PlayerBoard playerBoard, String name, int jetons, int posit
    * @return : the new player
    */
   public Player movePlayer(int movement) {
-    int newPosition = Math.min(movement + position, maxSize());
-    
-    return new Player(playerBoard, name, jetons, newPosition, onTop());
+    return new Player(playerBoard, name, jetons, Math.min(movement + position, GlobalBoard.size()), onTop());
   }
 
   /**
@@ -93,9 +92,5 @@ public record Player(PlayerBoard playerBoard, String name, int jetons, int posit
       throw new IllegalArgumentException("jetons + upJetons de " + name + "< 0");
     }
     return new Player(playerBoard, name, newJetons, position, onTop);
-  }
-
-  private static int maxSize() {
-    return 52;
   }
 }

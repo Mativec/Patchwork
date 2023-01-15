@@ -13,11 +13,9 @@ import java.util.Objects;
 public record Patch(List<Integer[]> squares, int buttonCost, int turns, int buttons) {
   public Patch {
     Objects.requireNonNull(squares, "squares is null");
-
     if (buttonCost < 0) {
       throw new IllegalArgumentException("buttonCost < 0");
     }
-
     if (turns < 0) {
       throw new IllegalArgumentException("turns < 0");
     }
@@ -60,19 +58,11 @@ public record Patch(List<Integer[]> squares, int buttonCost, int turns, int butt
   @Override
   public String toString() {
     var output = new StringBuilder();
-
-    output.append("Patch : ");
-
-    output.append("[");
+    output.append("Patch : ").append("[");
     squares.forEach(square -> output.append("(").append(square[0]).append(",").append(square[1]).append(")"));
     output.append("]");
-
-    output.append(", buttonCost: ");
-    output.append(buttonCost);
-
-    output.append(", turns: ");
-    output.append(turns);
-
+    output.append(", buttonCost: ").append(buttonCost);
+    output.append(", turns: ").append(turns);
     return output.toString();
   }
 }
