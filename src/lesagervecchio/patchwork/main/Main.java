@@ -1,8 +1,8 @@
 package lesagervecchio.patchwork.main;
 
-import fr.umlv.zen5.Application;
-import fr.umlv.zen5.ScreenInfo;
+import lesagervecchio.patchwork.board.PlayerBoard;
 import lesagervecchio.patchwork.display.DisplayService;
+
 import lesagervecchio.patchwork.display.GraphicalDisplay;
 import lesagervecchio.patchwork.display.TextualDisplay;
 import lesagervecchio.patchwork.game.Game;

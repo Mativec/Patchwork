@@ -111,6 +111,7 @@ public class Game { //nommer l'instance patchwork?
     verif = false;
     while (!verif) {
       //Affichage patchs dans la liste des patchs avec la bonne méthodes.
+
       displayService.drawOrderPatches(globalPatches);
       displayService.drawGlobalBoard(listPlayer);
       displayService.drawText(
@@ -123,13 +124,13 @@ public class Game { //nommer l'instance patchwork?
       index = -1;
       switch (choix) {//Penser a mettre a jour les onTop a chaque deplacements
         case 'b' -> { // aller a la prochaine case
-          verif = !verif;
-          //listPlayer.set(joueur, listPlayer.get(joueur).movePlayer(globalBoard.nextCaseButton(listPlayer.get(joueur).position())));//Echange l'instance player d'index joueur par un player mise a jour par movePlayer, incomplet par rapport a la nouvelle valeur du onTop de l'autre joueur (pas dans tous les cas, mais donc a verifier)
-          if(joueur == 1)
-        	  listPlayer.set(joueur, listPlayer.get(joueur).movePlayer(listPlayer.get(0).position() + 1));
-          else
-        	  listPlayer.set(joueur, listPlayer.get(joueur).movePlayer(listPlayer.get(1).position() + 1));
-          listPlayer = updateListPlayer(joueur);
+        	verif = !verif;
+        	//listPlayer.set(joueur, listPlayer.get(joueur).movePlayer(globalBoard.nextCaseButton(listPlayer.get(joueur).position())));//Echange l'instance player d'index joueur par un player mise a jour par movePlayer, incomplet par rapport a la nouvelle valeur du onTop de l'autre joueur (pas dans tous les cas, mais donc a verifier)
+        	if(joueur == 1)
+        		listPlayer.set(joueur, listPlayer.get(joueur).moveAndUpdate(globalPatches, globalBoard, (listPlayer.get(0).position() - listPlayer.get(1).position()) + 1));
+        	else
+        		listPlayer.set(joueur, listPlayer.get(joueur).moveAndUpdate(globalPatches, globalBoard,(listPlayer.get(1).position() - listPlayer.get(0).position()) + 1));
+        	listPlayer = updateListPlayer(joueur);
         }
         case '1' -> {// choix du patch 1
           if (globalPatches.checkPricePatch(listPlayer.get(joueur), 1)) {

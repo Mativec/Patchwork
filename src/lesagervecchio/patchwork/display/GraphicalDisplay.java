@@ -1,5 +1,9 @@
 package lesagervecchio.patchwork.display;
 
+
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
 import fr.umlv.zen5.Event;
 import fr.umlv.zen5.*;
 import lesagervecchio.patchwork.board.PlayerBoard;
@@ -12,6 +16,16 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Objects;
+
+import fr.umlv.zen5.Application;
+import fr.umlv.zen5.ApplicationContext;
+import fr.umlv.zen5.Event;
+import fr.umlv.zen5.KeyboardKey;
+import fr.umlv.zen5.ScreenInfo;
+import lesagervecchio.patchwork.board.PlayerBoard;
+import lesagervecchio.patchwork.global.GlobalPatches;
+import lesagervecchio.patchwork.patch.Patch;
+import lesagervecchio.patchwork.player.Player;
 
 public final class GraphicalDisplay implements DisplayService {
   private ApplicationContext context; // The window
@@ -28,12 +42,20 @@ public final class GraphicalDisplay implements DisplayService {
 
   @Override
   public void drawPatch(Patch patch) {
-
+	  
   }
 
   @Override
   public void drawPlayerBoard(PlayerBoard board) {
-
+	  ScreenInfo screen = context.getScreenInfo();
+	  float hauteurEcart, largeurEcart, largeurPlateau;
+	  hauteurEcart = screen.getHeight() / 10;
+	  largeurPlateau = screen.getHeight() - hauteurEcart * 2;
+	  largeurEcart = (screen.getWidth() - largeurPlateau) / 2;
+	  moveCursor(largeurEcart, hauteurEcart);
+	  context.renderFrame(graphics2D -> {
+		  drawSquare(graphics2D, largeurEcart, hauteurEcart, largeurPlateau, 5); 
+	  });	  
   }
 
   /**
@@ -53,6 +75,12 @@ public final class GraphicalDisplay implements DisplayService {
 
   @Override
   public void drawGlobalBoard(ArrayList<Player> players) {
+	    context.renderFrame(graphics2D -> {
+	      drawSquare(graphics2D, 50, 50, 500, 5);
+	      drawSquare(graphics2D, 100, 100, 50, 1);
+	    });
+	    context.pollOrWaitEvent(50000000);
+	    System.exit(0);
     context.renderFrame(graphics2D -> {
       drawSquare(graphics2D, 50, 50, 500, 5);
       drawSquare(graphics2D, 100, 100, 50, 1);
