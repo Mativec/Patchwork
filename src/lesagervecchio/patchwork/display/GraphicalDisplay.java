@@ -43,7 +43,7 @@ public final class GraphicalDisplay implements DisplayService {
     });
   }
 
-  public void drawGrille(Graphics2D graphics2D, int nbCases, float tailleCase) {
+  public void drawGrille(Graphics2D graphics2D, float tailleCase) {
     for (var i = 0; i < 9; i++) {
       for (var z = 0; z < 9; z++) {
         drawSquare(Color.BLACK, graphics2D, x + i * tailleCase, y + z * tailleCase, tailleCase, 3);
@@ -51,11 +51,12 @@ public final class GraphicalDisplay implements DisplayService {
     }
   }
 
-  @Override
   /**
    * Method that draw the playerBoard of the current player.
+   *
    * @param board : the board of the current player
    */
+  @Override
   public void drawPlayerBoard(PlayerBoard board) {
     ScreenInfo screen = context.getScreenInfo();
     float hauteurEcart, largeurEcart, largeurPlateau;
@@ -68,7 +69,7 @@ public final class GraphicalDisplay implements DisplayService {
       // var patch = Patches.binToPatch(List.of("16", "16", "0", "0"), 0, 0, 0);
       for (var playerPatch : board.getBoard()) {
         moveCursor(largeurEcart, hauteurEcart);
-        drawGrille(graphics2D, 9, largeurPlateau / 9);
+        drawGrille(graphics2D, largeurPlateau / 9);
         moveCursor(largeurEcart, hauteurEcart);
         drawPatch(playerPatch, largeurPlateau / 9);
       }
@@ -113,7 +114,7 @@ public final class GraphicalDisplay implements DisplayService {
           drawSquare(Color.CYAN, graphics2D, squareX, squareY, sizeSquareSide, widthSquareSide / 2);
         }
         if (GlobalBoard.getSpecialPatches().stream().anyMatch(integer -> integer.equals(position))) {
-          drawSquare(Color.LIGHT_GRAY, graphics2D, squareX, squareY, sizeSquareSide, widthSquareSide / 2);
+          drawSquare(Color.GREEN, graphics2D, squareX, squareY, sizeSquareSide, widthSquareSide / 2);
         }
         drawText(String.valueOf(i));
         if (i % 9 == 0) {
@@ -129,21 +130,26 @@ public final class GraphicalDisplay implements DisplayService {
     y = baseY;
   }
 
+  /**
+   * Draw a description of GlobalBoard's display
+   *
+   * @param players : an array of player
+   */
   private void drawGlobalBoardDescr(ArrayList<Player> players) {
-    ScreenInfo screen = context.getScreenInfo();
     int offset = 25;
+    int size = 5;
     x = 10;
     float baseY = y;
     context.renderFrame(graphics2D -> {
-      drawSquare(Color.PINK, graphics2D, x, y, offset, offset);
+      drawSquare(Color.PINK, graphics2D, x, y, offset, size);
       y += offset;
-      drawSquare(Color.BLUE, graphics2D, x, y, offset, offset);
+      drawSquare(Color.BLUE, graphics2D, x, y, offset, size);
       y += offset;
-      drawSquare(Color.RED, graphics2D, x, y, offset, offset);
+      drawSquare(Color.RED, graphics2D, x, y, offset, size);
       y += offset;
-      drawSquare(Color.CYAN, graphics2D, x, y, offset, offset);
+      drawSquare(Color.CYAN, graphics2D, x, y, offset, size);
       y += offset;
-      drawSquare(Color.LIGHT_GRAY, graphics2D, x, y, offset, offset);
+      drawSquare(Color.GREEN, graphics2D, x, y, offset, size);
       y += offset;
     });
     x += offset;
@@ -154,8 +160,7 @@ public final class GraphicalDisplay implements DisplayService {
       players.get(1).name(),
       "+1 bouton en passant cette case",
       "+1  special Patch en passant cette case"
-    )
-    ;
+    );
   }
 
   private Color getGlobalBoardColor(int position, ArrayList<Player> players) {
@@ -172,9 +177,28 @@ public final class GraphicalDisplay implements DisplayService {
 
   @Override
   public void drawOrderPatches(GlobalPatches globalPatches) {
-    // TODO: 01/15/2023 Check if everything is fine after merge
     ScreenInfo screen = context.getScreenInfo();
-    moveCursor(screen.getWidth() / 4, screen.getHeight() / 4);
+    float baseX, baseY, tmpX;
+    int offset = 20;
+    double spaceBetweenPatch = offset * 2.5;
+    baseX = x;
+    baseY = y;
+    tmpX = screen.getWidth() / 6;
+    x = tmpX;
+    y = screen.getHeight() / 6;
+    drawText("Liste des patches présents dans le deck :");
+    y += font.getSize();
+    globalPatches.getPatchesById().values().forEach(patch -> {
+      drawPatch(patch, offset);
+      x += spaceBetweenPatch;
+      if (x >= screen.getWidth() / 2) {
+        x = tmpX;
+        y += spaceBetweenPatch;
+      }
+      ;
+    });
+    x = baseX;
+    y = baseY;
   }
 
   @Override
@@ -197,7 +221,7 @@ public final class GraphicalDisplay implements DisplayService {
   /**
    * Draw one line of text
    *
-   * @param line : an argument of drawText(String ... text)
+   * @param line an argument of drawText(String ... text)
    */
   private void drawText(String line) {
     Objects.requireNonNull(font, "font has not been setup");
@@ -267,8 +291,15 @@ public final class GraphicalDisplay implements DisplayService {
 
   @Override
   public void moveCursor(float x, float y) {
-    this.x = (x == -1 ? context.getScreenInfo().getWidth() / 2 : x);
-    this.y = (y == -1 ? context.getScreenInfo().getHeight() / 2 : y);
+    ScreenInfo screen = context.getScreenInfo();
+    if (x >= screen.getWidth() || (x <= 0 && x != -1)) {
+      System.err.println("Invalide x to move cursor");
+    } else if (y >= screen.getHeight() || (y <= 0 && y != -1)) {
+      System.err.println("Invalide y to move cursor");
+    } else {
+      this.x = (x == -1 ? context.getScreenInfo().getWidth() / 2 : x);
+      this.y = (y == -1 ? context.getScreenInfo().getHeight() / 2 : y);
+    }
   }
 
   @Override
@@ -276,6 +307,8 @@ public final class GraphicalDisplay implements DisplayService {
     ScreenInfo screenInfo = context.getScreenInfo();
     context.renderFrame(graphics2D -> {
       graphics2D.setColor(backgroundColor);
+      System.out.println(screenInfo.getWidth());
+      System.out.println(screenInfo.getHeight());
       graphics2D.fill(new Rectangle2D.Float(0, 0, screenInfo.getWidth(), screenInfo.getHeight()));
     });
   }
