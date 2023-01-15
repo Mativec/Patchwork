@@ -7,10 +7,12 @@ import java.awt.Graphics2D;
 import fr.umlv.zen5.Event;
 import fr.umlv.zen5.*;
 import lesagervecchio.patchwork.board.PlayerBoard;
+import lesagervecchio.patchwork.global.GlobalBoard;
 import lesagervecchio.patchwork.global.GlobalPatches;
 import lesagervecchio.patchwork.patch.Patch;
 import lesagervecchio.patchwork.player.Player;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
@@ -66,8 +68,8 @@ public final class GraphicalDisplay implements DisplayService {
    * @param c : size of a side of the square.
    * @param w : width of a side of the square.
    */
-  void drawSquare(Graphics2D graphics2D, float x, float y, float c, float w){
-    graphics2D.setColor(Color.BLACK);
+  void drawSquare(Color color, Graphics2D graphics2D, float x, float y, float c, float w){
+    graphics2D.setColor(color);
     graphics2D.fill(new Rectangle2D.Float(x, y, c, c));
     graphics2D.setColor(backgroundColor);
     graphics2D.fill(new Rectangle2D.Float(x + w, y + w, c - 2 * w, c - 2 * w));
@@ -75,23 +77,45 @@ public final class GraphicalDisplay implements DisplayService {
 
   @Override
   public void drawGlobalBoard(ArrayList<Player> players) {
-	    context.renderFrame(graphics2D -> {
-	      drawSquare(graphics2D, 50, 50, 500, 5);
-	      drawSquare(graphics2D, 100, 100, 50, 1);
-	    });
-	    context.pollOrWaitEvent(50000000);
-	    System.exit(0);
+    // TODO: 01/15/2023 Check if everything is fine after merge
+    ScreenInfo screen = context.getScreenInfo();
+    moveCursor(screen.getWidth() / 4, screen.getHeight() / 4);
+    float baseX = x;
+    float baseY = y;
     context.renderFrame(graphics2D -> {
-      drawSquare(graphics2D, 50, 50, 500, 5);
-      drawSquare(graphics2D, 100, 100, 50, 1);
+      float offset = 50;
+      for (int i = 0; i <= GlobalBoard.size(); i++) {
+        Color color = getGlobalBoardColor(i, players);
+        x += offset;
+        drawSquare(color, graphics2D, x, y, 50, 5);
+        if(i != 0 && i % 9 == 0){
+          offset *= -1;
+          x += offset;
+          y += 50;
+        }
+      }
     });
-    context.pollOrWaitEvent(50000000);
-    System.exit(0);
+    x = baseX;
+    y = baseY;
+  }
+
+  private Color getGlobalBoardColor(int position, ArrayList<Player> players) {
+    if (players.stream().allMatch(player -> player.position() == position)) {
+      return Color.PINK;
+    } else if (position == players.get(0).position()) {
+      return Color.BLUE;
+    } else if (position == players.get(1).position()) {
+      return Color.RED;
+    } else {
+      return Color.BLACK;
+    }
   }
 
   @Override
   public void drawOrderPatches(GlobalPatches globalPatches) {
-
+    // TODO: 01/15/2023 Check if everything is fine after merge
+    ScreenInfo screen = context.getScreenInfo();
+    moveCursor(screen.getWidth() / 4, screen.getHeight() / 4);
   }
 
   @Override

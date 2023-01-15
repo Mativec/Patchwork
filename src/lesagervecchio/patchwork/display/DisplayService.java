@@ -1,8 +1,7 @@
 package lesagervecchio.patchwork.display;
 
 import lesagervecchio.patchwork.board.PlayerBoard;
-
-
+import lesagervecchio.patchwork.global.GlobalBoard;
 import lesagervecchio.patchwork.global.GlobalPatches;
 import lesagervecchio.patchwork.patch.Patch;
 import lesagervecchio.patchwork.player.Player;
@@ -70,6 +69,7 @@ public sealed interface DisplayService permits TextualDisplay, GraphicalDisplay 
   /**
    * Move the cursor for the next to operate at a precise point of the screen
    * (0, 0) based on corner N-W
+   * -1 on a coordinate to move the cursor at the center on this coordinate
    * @param x : horizontal coordinate wanted for the cursor
    * @param y : vertical coordinate wanted for the cursor
    */

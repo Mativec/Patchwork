@@ -31,6 +31,14 @@ public class GlobalBoard {
     sPatches = List.of(19, 25, 31, 43, 49);
   }
 
+  public static List<Integer> getButtons() {
+    return buttons;
+  }
+
+  public static List<Integer> getSpecialPatches() {
+    return sPatches;
+  }
+
   /**
    * Method that return the number of buttons that a player will collect if he make that move
    *
@@ -46,10 +54,10 @@ public class GlobalBoard {
 	apres = (int) buttons.stream().filter(u -> u > player.position() + move).count();
 	return apres - avant;
   }
-  
+
   /**
    * Method that return the number of SepcialPatches that a player will collect if he make that move
-   * 
+   *
    * @param player : the player that will make the move
    * @param move   : the number of cases that the player will pass
    * @return : the number of special patches
@@ -68,8 +76,11 @@ public class GlobalBoard {
    * @return the position of the next button case
    */
   public int nextCaseButton(int pos) {
-    //Fonction renvoyant, en fonction de la position d'un joueur, la position de la prochaine
-    //case boutton
-    return buttons.stream().filter(u -> u > pos).findFirst().orElse(53);
+    //Fonction renvoyant, en fonction de la position d'un joueur, la position de la prochaine case bouton
+    return buttons.stream().filter(u -> u > pos).findFirst().orElse(GlobalBoard.size());
+  }
+
+  public static Integer size() {
+    return 54;
   }
 }
