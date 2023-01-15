@@ -1,6 +1,7 @@
 package lesagervecchio.patchwork.global;
 
 import java.io.IOException;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -136,8 +137,10 @@ public class GlobalPatches {
     player = player.updateJetons(oldPatch.buttonCost());
     player = player.movePlayer(oldPatch.turns());
     //Ensuite, on supprime oldPatch de globalPatches
-    patchesById.remove(orderPatches.get(index));
-    orderPatches.remove(index);
+    if(index != -1) {
+    	patchesById.remove(orderPatches.get(index));
+    	orderPatches.remove(index);
+    }
     //Et on envoie dans le plateau du joueur le vieux patch ici!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     player.playerBoard().patchPlacePhase(displayService, oldPatch);
     return player;

@@ -1,7 +1,7 @@
 package lesagervecchio.patchwork.board;
 
 import lesagervecchio.patchwork.display.DisplayService;
-import lesagervecchio.patchwork.display.TextualDisplay;
+
 import lesagervecchio.patchwork.patch.Patch;
 import lesagervecchio.patchwork.patch.Patches;
 

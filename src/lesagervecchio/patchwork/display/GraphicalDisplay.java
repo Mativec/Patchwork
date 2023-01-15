@@ -1,17 +1,22 @@
 package lesagervecchio.patchwork.display;
 
-import fr.umlv.zen5.*;
-import fr.umlv.zen5.Event;
-import lesagervecchio.patchwork.board.PlayerBoard;
-import lesagervecchio.patchwork.global.GlobalPatches;
-import lesagervecchio.patchwork.patch.Patch;
-import lesagervecchio.patchwork.player.Player;
-
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Objects;
+
+import fr.umlv.zen5.Application;
+import fr.umlv.zen5.ApplicationContext;
+import fr.umlv.zen5.Event;
+import fr.umlv.zen5.KeyboardKey;
+import fr.umlv.zen5.ScreenInfo;
+import lesagervecchio.patchwork.board.PlayerBoard;
+import lesagervecchio.patchwork.global.GlobalPatches;
+import lesagervecchio.patchwork.patch.Patch;
+import lesagervecchio.patchwork.player.Player;
 
 public final class GraphicalDisplay implements DisplayService {
   private ApplicationContext context; // The window
@@ -28,17 +33,38 @@ public final class GraphicalDisplay implements DisplayService {
 
   @Override
   public void drawPatch(Patch patch) {
-
+	  
   }
 
   @Override
   public void drawPlayerBoard(PlayerBoard board) {
-
+	  ScreenInfo screen = context.getScreenInfo();
+	  float hauteurEcart, largeurEcart, largeurPlateau;
+	  hauteurEcart = screen.getHeight() / 10;
+	  largeurPlateau = screen.getHeight() - hauteurEcart * 2;
+	  largeurEcart = (screen.getWidth() - largeurPlateau) / 2;
+	  moveCursor(largeurEcart, hauteurEcart);
+	  context.renderFrame(graphics2D -> {
+		  drawSquare(graphics2D, largeurEcart, hauteurEcart, largeurPlateau, 5); 
+	  });	  
   }
+  
+  void drawSquare(Graphics2D graphics2D, float x, float y, float c, float w){
+	    graphics2D.setColor(Color.BLACK);
+	    graphics2D.fill(new Rectangle2D.Float(x, y, c, c));
+	    graphics2D.setColor(backgroundColor);
+	    graphics2D.fill(new Rectangle2D.Float(x + w, y + w, c - 2 * w, c - 2 * w));
+	  }
+
 
   @Override
   public void drawGlobalBoard(ArrayList<Player> players) {
-
+	    context.renderFrame(graphics2D -> {
+	      drawSquare(graphics2D, 50, 50, 500, 5);
+	      drawSquare(graphics2D, 100, 100, 50, 1);
+	    });
+	    context.pollOrWaitEvent(50000000);
+	    System.exit(0);
   }
 
   @Override
@@ -111,7 +137,7 @@ public final class GraphicalDisplay implements DisplayService {
     Event event;
     do {
       event = context.pollOrWaitEvent(Integer.MAX_VALUE);
-    } while (event.getAction() != Event.Action.KEY_RELEASED || !validKey(event.getKey()));
+    } while (Objects.isNull(event) || event.getAction() != Event.Action.KEY_RELEASED || !validKey(event.getKey()));
     return getInput(event.getKey());
   }
 

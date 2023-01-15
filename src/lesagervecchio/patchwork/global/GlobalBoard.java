@@ -1,7 +1,5 @@
 package lesagervecchio.patchwork.global;
 
-import java.util.ArrayList;
-
 import java.util.List;
 
 import lesagervecchio.patchwork.player.Player;
@@ -43,7 +41,10 @@ public class GlobalBoard {
   public int isMoveButtonable(Player player, int move) {
     //Renvoie true si avec ce move le joueur va passer un boutton, false sinon
     //stream retournant le premier boutton du plateau depassant la pos du joueur. Vaut -1 sinon.
-    return (int) buttons.stream().filter(u -> u > player.position()).count();
+	int avant, apres;
+	avant = (int) buttons.stream().filter(u -> u > player.position()).count();
+	apres = (int) buttons.stream().filter(u -> u > player.position() + move).count();
+	return apres - avant;
   }
   
   /**
@@ -54,7 +55,10 @@ public class GlobalBoard {
    * @return : the number of special patches
    */
   public int isMoveSpecialPatchable(Player player, int move) {
-	  return (int) sPatches.stream().filter(u -> u > player.position()).count();
+	  int avant, apres;
+	  avant = (int) sPatches.stream().filter(u -> u < player.position()).count();
+	  apres = (int) sPatches.stream().filter(u -> u < player.position() + move).count();
+	  return apres - avant;
   }
 
   /**
