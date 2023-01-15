@@ -160,7 +160,7 @@ public class PlayerBoard {
       display.drawText("Voici votre plateau :");
       display.drawPlayerBoard(this);
       display.drawText("Voici le patch que vous voulez ajouter au plateau :");
-      display.drawPatch(patch);
+      display.drawPatch(patch, 1);
       display.drawText(
         "[p] -> placer",
         "[l/r] -> tourner [gauche/droite]",

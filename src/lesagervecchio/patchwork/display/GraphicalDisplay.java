@@ -10,12 +10,14 @@ import lesagervecchio.patchwork.board.PlayerBoard;
 import lesagervecchio.patchwork.global.GlobalBoard;
 import lesagervecchio.patchwork.global.GlobalPatches;
 import lesagervecchio.patchwork.patch.Patch;
+import lesagervecchio.patchwork.patch.Patches;
 import lesagervecchio.patchwork.player.Player;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -41,13 +43,27 @@ public final class GraphicalDisplay implements DisplayService {
     y = 0;
     Application.run(backgroundColor, applicationContext -> context = applicationContext);
   }
-
+  
   @Override
-  public void drawPatch(Patch patch) {
+  public void drawPatch(Patch patch, float tailleCase) {
 	  
   }
+  
+  public void drawGraphicalPatch(Patch patch, Graphics2D graphics2D, float tailleCase) {
+	  for(var coord : patch.squares()) {
+		  drawSquare(Color.BLACK, graphics2D, 
+				  		x + coord[0] * tailleCase,
+				  		y + coord[1] * tailleCase, 
+				  		tailleCase, 5);
+	  }
+  }
+
 
   @Override
+  /**
+   * Method that draw the playerBoard of the current player.
+   * @param board : the board of the current player
+   */
   public void drawPlayerBoard(PlayerBoard board) {
 	  ScreenInfo screen = context.getScreenInfo();
 	  float hauteurEcart, largeurEcart, largeurPlateau;
@@ -57,6 +73,10 @@ public final class GraphicalDisplay implements DisplayService {
 	  moveCursor(largeurEcart, hauteurEcart);
 	  context.renderFrame(graphics2D -> {
 		  drawSquare(Color.BLACK, graphics2D, largeurEcart, hauteurEcart, largeurPlateau, 5);
+		  var patch = Patches.binToPatch(List.of("16", "16", "0", "0"), 0, 0, 0);
+		  //for(var playerPatch : board)
+		  moveCursor(largeurEcart, hauteurEcart);
+		  drawGraphicalPatch(patch, graphics2D, largeurPlateau / 9);
 	  });	  
   }
 
