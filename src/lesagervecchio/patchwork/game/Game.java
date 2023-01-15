@@ -119,6 +119,9 @@ public class Game { //nommer l'instance patchwork?
       displayService.drawOrderPatches(globalPatches);
       displayService.drawGlobalBoard(listPlayer);
       //displayService.moveCursor(50, 1000);
+      displayService.drawPlayerBoard(listPlayer.get(joueur).playerBoard());
+      choix = displayService.waitInput();
+      displayService.clearWindow();
       displayService.moveCursor(10, 20);
       displayService.drawText(
         "C'est à " + listPlayer.get(joueur).name() + " de jouer.",

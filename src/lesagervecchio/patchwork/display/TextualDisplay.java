@@ -1,6 +1,7 @@
 package lesagervecchio.patchwork.display;
 
 import lesagervecchio.patchwork.board.PlayerBoard;
+
 import lesagervecchio.patchwork.global.GlobalBoard;
 import lesagervecchio.patchwork.global.GlobalPatches;
 import lesagervecchio.patchwork.patch.Patch;
@@ -41,8 +42,7 @@ public final class TextualDisplay implements DisplayService {
    *
    * @param patch : Patch we want to show on screen.
    */
-  @Override
-  public void drawPatch(Patch patch) {
+  public void drawPatch(Patch patch, float tailleCase) {
     Objects.requireNonNull(patch, "patch is null");
     System.out.print(sketchPatch(patch).replaceAll("\\.", " "));
     System.out.println(patch);

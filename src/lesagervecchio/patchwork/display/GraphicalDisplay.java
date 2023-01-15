@@ -4,20 +4,12 @@ package lesagervecchio.patchwork.display;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import fr.umlv.zen5.Event;
-import fr.umlv.zen5.*;
-import lesagervecchio.patchwork.board.PlayerBoard;
-import lesagervecchio.patchwork.global.GlobalBoard;
-import lesagervecchio.patchwork.global.GlobalPatches;
-import lesagervecchio.patchwork.patch.Patch;
-import lesagervecchio.patchwork.player.Player;
-
-import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Random;
 
 import fr.umlv.zen5.Application;
 import fr.umlv.zen5.ApplicationContext;
@@ -25,8 +17,10 @@ import fr.umlv.zen5.Event;
 import fr.umlv.zen5.KeyboardKey;
 import fr.umlv.zen5.ScreenInfo;
 import lesagervecchio.patchwork.board.PlayerBoard;
+import lesagervecchio.patchwork.global.GlobalBoard;
 import lesagervecchio.patchwork.global.GlobalPatches;
 import lesagervecchio.patchwork.patch.Patch;
+import lesagervecchio.patchwork.patch.Patches;
 import lesagervecchio.patchwork.player.Player;
 
 public final class GraphicalDisplay implements DisplayService {
@@ -41,13 +35,37 @@ public final class GraphicalDisplay implements DisplayService {
     y = 0;
     Application.run(backgroundColor, applicationContext -> context = applicationContext);
   }
-
+  
   @Override
-  public void drawPatch(Patch patch) {
+  public void drawPatch(Patch patch, float tailleCase) {
 	  
   }
+  
+  public void drawGraphicalPatch(Patch patch, Graphics2D graphics2D, float tailleCase) {
+	  Random random = new Random();
+	  Color couleur = new Color(random.nextInt(256), random.nextInt(256), random.nextInt(256));
+	  for(var coord : patch.squares()) {
+		  drawSquare(couleur, graphics2D, 
+				  		x + coord[0] * tailleCase,
+				  		y + coord[1] * tailleCase, 
+				  		tailleCase, 5);
+	  }
+  }
 
+
+  public void drawGrille(Graphics2D graphics2D, int nbCases, float tailleCase) {
+	  for(var i = 0; i < 9; i ++) {
+		  for(var z = 0; z < 9; z ++) {
+			  drawSquare(Color.BLACK, graphics2D, x + i * tailleCase, y + z * tailleCase, tailleCase, 3);
+		  }
+	  }
+  }
+  
   @Override
+  /**
+   * Method that draw the playerBoard of the current player.
+   * @param board : the board of the current player
+   */
   public void drawPlayerBoard(PlayerBoard board) {
 	  ScreenInfo screen = context.getScreenInfo();
 	  float hauteurEcart, largeurEcart, largeurPlateau;
@@ -57,6 +75,13 @@ public final class GraphicalDisplay implements DisplayService {
 	  moveCursor(largeurEcart, hauteurEcart);
 	  context.renderFrame(graphics2D -> {
 		  drawSquare(Color.BLACK, graphics2D, largeurEcart, hauteurEcart, largeurPlateau, 5);
+		  // var patch = Patches.binToPatch(List.of("16", "16", "0", "0"), 0, 0, 0);
+		  for(var playerPatch : board.getBoard()) {
+			moveCursor(largeurEcart, hauteurEcart);
+		  	drawGrille(graphics2D, 9, largeurPlateau / 9);
+		  	moveCursor(largeurEcart, hauteurEcart);
+		  	drawGraphicalPatch(playerPatch, graphics2D, largeurPlateau / 9);
+		  }
 	  });	  
   }
 

@@ -18,7 +18,7 @@ public sealed interface DisplayService permits TextualDisplay, GraphicalDisplay 
    *
    * @param patch : Patch we want to show on screen.
    */
-  void drawPatch(Patch patch);
+  void drawPatch(Patch patch, float tailleCase);
 
   /**
    * @param board : the Player Board we want to show
