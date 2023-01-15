@@ -56,7 +56,7 @@ public final class GraphicalDisplay implements DisplayService {
 	  largeurEcart = (screen.getWidth() - largeurPlateau) / 2;
 	  moveCursor(largeurEcart, hauteurEcart);
 	  context.renderFrame(graphics2D -> {
-		  drawSquare(graphics2D, largeurEcart, hauteurEcart, largeurPlateau, 5); 
+		  drawSquare(Color.BLACK, graphics2D, largeurEcart, hauteurEcart, largeurPlateau, 5);
 	  });	  
   }
 
