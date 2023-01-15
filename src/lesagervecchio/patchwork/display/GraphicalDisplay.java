@@ -4,22 +4,12 @@ package lesagervecchio.patchwork.display;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import fr.umlv.zen5.Event;
-import fr.umlv.zen5.*;
-import lesagervecchio.patchwork.board.PlayerBoard;
-import lesagervecchio.patchwork.global.GlobalBoard;
-import lesagervecchio.patchwork.global.GlobalPatches;
-import lesagervecchio.patchwork.patch.Patch;
-import lesagervecchio.patchwork.patch.Patches;
-import lesagervecchio.patchwork.player.Player;
-
-import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Random;
 
 import fr.umlv.zen5.Application;
 import fr.umlv.zen5.ApplicationContext;
@@ -27,8 +17,10 @@ import fr.umlv.zen5.Event;
 import fr.umlv.zen5.KeyboardKey;
 import fr.umlv.zen5.ScreenInfo;
 import lesagervecchio.patchwork.board.PlayerBoard;
+import lesagervecchio.patchwork.global.GlobalBoard;
 import lesagervecchio.patchwork.global.GlobalPatches;
 import lesagervecchio.patchwork.patch.Patch;
+import lesagervecchio.patchwork.patch.Patches;
 import lesagervecchio.patchwork.player.Player;
 
 public final class GraphicalDisplay implements DisplayService {
@@ -50,8 +42,10 @@ public final class GraphicalDisplay implements DisplayService {
   }
   
   public void drawGraphicalPatch(Patch patch, Graphics2D graphics2D, float tailleCase) {
+	  Random random = new Random();
+	  Color couleur = new Color(random.nextInt(256), random.nextInt(256), random.nextInt(256));
 	  for(var coord : patch.squares()) {
-		  drawSquare(Color.BLACK, graphics2D, 
+		  drawSquare(couleur, graphics2D, 
 				  		x + coord[0] * tailleCase,
 				  		y + coord[1] * tailleCase, 
 				  		tailleCase, 5);
